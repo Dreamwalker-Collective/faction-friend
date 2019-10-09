@@ -2,6 +2,9 @@
 -- FactionFriend.lua
 ------------------------------------------------------
 local addonName, addonTable = ...; 
+local AceConfig = LibStub("AceConfig-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local AceDB = LibStub("AceDB-3.0")
 
 FFF_LastBarSwitchTime = 0;
 FFF_LastRepGainTime = 0;
@@ -10,6 +13,219 @@ FFF_QueuedMessageFrames = {};
 
 FFF_MAX_RECENTS = 10;
 FFF_MAX_FACTIONS = 300;	-- infinite loop protection
+
+local function getProfileOption(info)
+    return GFW_FactionFriend.Config[info.arg]
+end
+
+local function setProfileOption(info, value)
+    GFW_FactionFriend.Config[info.arg] = value
+    GFW_FactionFriend.ReputationWatchBar.Update();
+    if (GFW_FactionFriend.Config.MoveExaltedInactive) then
+        -- move any already exalted factions when the preference is first enabled
+        FFF_MoveExaltedFactionsInactive();
+    end
+    if (GFW_FactionFriend.Config.CountRepeatGains) then
+        -- TODO: check whether reputation messages are set to show in chat windows, warn if not
+        
+    end
+    if (info.arg == "ReputationColors") then
+        if (value) then
+            FACTION_BAR_COLORS = FFF_FACTION_BAR_COLORS;
+        else
+            -- TODO: prompt for UI reload
+        end
+    end
+end
+
+local titleText = GetAddOnMetadata(addonName, "Title");
+local version = GetAddOnMetadata(addonName, "Version");
+titleText = titleText .. " " .. version;
+
+function FFF_ColorsOptionTipText()
+    local text = ""
+    for standing = 1, 8 do
+        local colorCode = GFWUtils.ColorToCode(FFF_FACTION_BAR_COLORS[standing]);
+        text = text .. colorCode .. _G["FACTION_STANDING_LABEL"..standing] .. FONT_COLOR_CODE_CLOSE;
+        if standing < 8 then
+            text = text .. " ";
+        end
+    end
+    return text;
+end
+
+local options = {
+    type = 'group',
+    name = titleText,
+    args = {
+        general = {
+            type = 'group',
+            cmdInline = true,
+            order = -1,
+            get = getProfileOption,
+            set = setProfileOption,
+            name = FFF_OPTIONS_GENERAL,
+            args = {
+                showPotential = {
+                    type = 'toggle',
+                    order = 10,
+                    width = "double",
+                    name = FFF_OPTION_SHOW_POTENTIAL,
+                    desc = FFF_OPTION_SHOW_POTENTIAL_TIP,
+                    arg = "ShowPotential",
+                },
+                -- useCurrency = {
+                --  type = 'toggle',
+                --  order = 15,
+                --  width = "double",
+                --  name = FFF_OPTION_USE_CURRENCY,
+                --  desc = FFF_OPTION_USE_CURRENCY_TIP,
+                --  arg = "UseCurrency",
+                -- },
+                tooltip = {
+                    type = 'toggle',
+                    order = 20,
+                    width = "double",
+                    name = FFF_OPTION_TOOLTIP,
+                    arg = "Tooltip",
+                },
+                countRepeatGains = {
+                    type = 'toggle',
+                    order = 30,
+                    width = "double",
+                    name = FFF_OPTION_REPEAT_GAINS,
+                    desc = FFF_OPTION_REPEAT_GAINS_TIP,
+                    arg = "CountRepeatGains",
+                },
+                moveExaltedInactive = {
+                    type = 'toggle',
+                    order = 40,
+                    width = "double",
+                    name = FFF_OPTION_MOVE_EXALTED,
+                    arg = "MoveExaltedInactive",
+                },
+                reputationColors = {
+                    type = 'toggle',
+                    order = 40,
+                    width = "double",
+                    name = FFF_OPTION_REPUTATION_COLORS,
+                    desc = FFF_ColorsOptionTipText(),
+                    arg = "ReputationColors",
+                },
+                switchBar = {
+                    type = "group",
+                    name = FFF_OPTIONS_SWITCHBAR,
+                    order = 50,
+                    inline = true,
+                    args = {
+                        zones = {
+                            type = 'toggle',
+                            order = 10,
+                            width = "double",
+                            name = FFF_OPTION_ZONES,
+                            arg = "Zones",
+                        },
+                        repGained = {
+                            type = 'toggle',
+                            order = 20,
+                            width = "double",
+                            name = FFF_OPTION_REP_GAINED,
+                            arg = "RepGained",
+                        },
+                        tabard = {
+                            type = 'toggle',
+                            order = 30,
+                            width = "double",
+                            name = FFF_OPTION_TABARD,
+                            arg = "Tabard",
+                        },
+                        guild = {
+                            type = 'toggle',
+                            order = 40,
+                            width = "double",
+                            name = FFF_OPTION_NO_GUILD_AUTOSWITCH,
+                            arg = "NoGuildAutoswitch",
+                        },
+                        bodyguard = {
+                            type = 'toggle',
+                            order = 50,
+                            width = "double",
+                            name = FFF_OPTION_NO_BODYGUARD_AUTOSWITCH,
+                            arg = "NoBodyguardAutoswitch",
+                    }
+                    },
+                },
+                combatDisableMenu = {
+                    type = 'toggle',
+                    order = 60,
+                    width = "double",
+                    name = FFF_OPTION_COMBAT_DISABLE,
+                    desc = FFF_OPTION_COMBAT_DISABLE_TIP,
+                    arg = "CombatDisableMenu",
+                },
+                tips = {
+                    type = "description",
+                    name = FFF_OPTIONS_TIPS,
+                    order = 100,
+                },
+            },
+        },
+    },
+}
+local profileDefault = {
+    ShowPotential = true,
+    Tooltip = true,
+    CountRepeatGains = false,
+    MoveExaltedInactive = false,
+    ReputationColors = false,
+    Zones = false,
+    RepGained = true,
+    Tabard = true,
+    CombatDisableMenu = false,
+    NoGuildAutoswitch = false,
+    NoBodyguardAutoswitch = true,
+}
+local defaults = {}
+defaults.profile = profileDefault
+
+function GFW_FactionFriend:SetupOptions()
+    -- Inject profile options
+    options.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
+    options.args.profile.order = -2
+    
+    -- Register options table
+    AceConfig:RegisterOptionsTable(addonName, options)
+    
+    local titleText = GetAddOnMetadata(addonName, "Title");
+    titleText = string.gsub(titleText, "Fizzwidget", "GFW");        -- shorter so it fits in the list width
+
+    -- Setup Blizzard option frames
+    self.optionsFrames = {}
+    -- The ordering here matters, it determines the order in the Blizzard Interface Options
+    self.optionsFrames.general = AceConfigDialog:AddToBlizOptions(addonName, titleText, nil, "general")
+    self.optionsFrames.profile = AceConfigDialog:AddToBlizOptions(addonName, FFF_OPTIONS_PROFILE, titleText, "profile")
+end
+
+function GFW_FactionFriend:OnInitialize()
+
+    -- Create DB
+    self.db = AceDB:New("GFW_FactionFriend_DB", defaults, "Default")
+    self.db.RegisterCallback(self, "OnProfileChanged", "OnProfileChanged")
+    self.db.RegisterCallback(self, "OnProfileCopied", "OnProfileChanged")
+    self.db.RegisterCallback(self, "OnProfileReset", "OnProfileChanged")
+    
+    GFW_FactionFriend.Config = self.db.profile
+
+    self:SetupOptions()
+    
+    --TEMP
+    --FFF_NewMenuTest()
+    
+end
+
+function GFW_FactionFriend:ShowConfig()
+    InterfaceOptionsFrame_OpenToCategory(self.optionsFrames.general)
+end
 
 
 function FFF_HookTooltip(frame)
@@ -24,7 +240,7 @@ function FFF_OnTooltipSetItem(self)
 	
 	local name, link = self:GetItem();
 	if (not link) then return; end
-	if (FFF_Config.Tooltip and link) then
+	if (GFW_FactionFriend.Config.Tooltip and link) then
 		local _, _, itemID  = string.find(link, "item:(%d+)");
 		itemID = tonumber(itemID);
 		
@@ -95,7 +311,7 @@ function FFF_AddTooltipLine(tooltip, leftText, factionID, isOnlyLine)
 end
 
 function FFF_OnLoad(self)
-	hooksecurefunc("MainMenuBar_UpdateExperienceBars", FFF_ReputationWatchBar.Update);
+	GFW_FactionFriend.ReputationWatchBar.RegisterFunctions();
 	hooksecurefunc("SetWatchedFactionIndex", FFF_SetWatchedFactionIndex);
 	hooksecurefunc("CloseDropDownMenus", FFF_HideMenus);
 	ReputationFrame:HookScript("OnHide", GameTooltip_Hide);
@@ -145,10 +361,10 @@ function FFF_OnEvent(self, event, arg1, arg2)
 		self:RegisterEvent("BAG_UPDATE");
 		self:RegisterEvent("UNIT_INVENTORY_CHANGED");
 		
-		if (FFF_Config.ReputationColors) then
+		if (GFW_FactionFriend.Config.ReputationColors) then
 			FACTION_BAR_COLORS = FFF_FACTION_BAR_COLORS;
 		end
-		FFF_ReputationWatchBar.Update();
+		GFW_FactionFriend.ReputationWatchBar.Update();
 		
 		--self:RegisterEvent("QUEST_LOG_UPDATE");
 	elseif( event == "PLAYER_LEAVING_WORLD" ) then
@@ -169,11 +385,11 @@ function FFF_OnEvent(self, event, arg1, arg2)
 --	elseif( event == "QUEST_LOG_UPDATE" ) then
 --		FFF_BeginQuestScan();
 	elseif ( event == "BAG_UPDATE") then
-		FFF_ReputationWatchBar.Update();
+		GFW_FactionFriend.ReputationWatchBar.Update();
 	elseif ( event == "UNIT_INVENTORY_CHANGED") then
 		if (arg1 == "player") then
-			FFF_ReputationWatchBar.Update();
-			if (FFF_Config.Tabard) then
+			GFW_FactionFriend.ReputationWatchBar.Update();
+			if (GFW_FactionFriend.Config.Tabard) then
 				local itemID = GetInventoryItemID("player", GetInventorySlotInfo("TabardSlot"));
 				if (itemID ~= FFF_LastTabardID) then
 					-- looks like we've changed tabards
@@ -205,8 +421,8 @@ function FFF_CombatMessageFactionFilter(frame, event, message, ...)
 	end
 
 	FFF_AddToRecentFactions(factionName);
-	if ((amount > 0) and (GetTime() - FFF_LastRepGainTime > 5) and ((origFactionName ~= GUILD_REPUTATION) or (not FFF_Config.NoGuildAutoswitch)) and ((not FFF_FactionIsBodyguard(factionName)) or (not FFF_Config.NoBodyguardAutoswitch))) then
-		if (not FFF_Config.Zones) then
+	if ((amount > 0) and (GetTime() - FFF_LastRepGainTime > 5) and ((origFactionName ~= GUILD_REPUTATION) or (not GFW_FactionFriend.Config.NoGuildAutoswitch)) and ((not FFF_FactionIsBodyguard(factionName)) or (not GFW_FactionFriend.Config.NoBodyguardAutoswitch))) then
+		if (not GFW_FactionFriend.Config.Zones) then
 			FFF_SetWatchedFactionConditional(factionName);
 		else
 			local currentZone = GetRealZoneText();
@@ -219,11 +435,11 @@ function FFF_CombatMessageFactionFilter(frame, event, message, ...)
 
 	FFF_LastRepGainTime = GetTime();
 	local index, _, _, standing, min, max, value = FFF_GetFactionInfoByName(factionName);
-	if (FFF_Config.MoveExaltedInactive and GFW_FactionFriend.Utils.isExalted(standing, factionID)) then
+	if (GFW_FactionFriend.Config.MoveExaltedInactive and GFW_FactionFriend.Utils.isExalted(standing, factionID)) then
 		SetFactionInactive(index);
 	end
 
-	if (FFF_Config.CountRepeatGains) then
+	if (GFW_FactionFriend.Config.CountRepeatGains) then
 		if (not standing) then
 			-- we don't know about this faction yet
 			-- (for a new faction, the gain/loss message often comes before the initial-state message)
@@ -253,7 +469,7 @@ function FFF_SystemMessageFactionFilter(frame, event, message, ...)
 	if (factionName == GUILD_REPUTATION or factionName == GUILD) then
 		factionName = GetGuildInfo("player");
 	end
-	if (FFF_Config.MoveExaltedInactive and GFW_FactionFriend.Utils.isExaltedLabel(standingText, factionID)) then
+	if (GFW_FactionFriend.Config.MoveExaltedInactive and GFW_FactionFriend.Utils.isExaltedLabel(standingText, factionID)) then
 		local index = FFF_GetFactionInfoByName(factionName);
 		SetFactionInactive(index);
 	end
@@ -268,7 +484,7 @@ function FFF_SystemMessageFactionFilter(frame, event, message, ...)
 		FFF_QueuedMessageFrames = {};
 		
 		if (FFF_QueuedMessageAmount > 0) then
-			if (not FFF_Config.Zones) then
+			if (not GFW_FactionFriend.Config.Zones) then
 				FFF_SetWatchedFactionConditional(factionName);
 			else
 				if (not zoneFaction or zoneFaction == factionName) then
@@ -456,7 +672,7 @@ function FFF_GetFactionIndex(faction)
 end
 
 function FFF_CheckZone()
-	if (not FFF_Config.Zones) then return; end
+	if (not GFW_FactionFriend.Config.Zones) then return; end
 	
 	local currentZone = GetRealZoneText();
 	local zoneFaction = FFF_ZoneFactions[UnitFactionGroup("player")][currentZone] or FFF_ZoneFactions.Neutral[currentZone];
@@ -1016,26 +1232,6 @@ end
 ------------------------------------------------------
 -- reputation frame additions 
 ------------------------------------------------------
-
-function FFF_ReputationFrame_SetRowType(factionRow, isChild, isHeader, hasRep)
-	local factionRowName = factionRow:GetName()
-
-	local factionIcon = _G[factionRowName.."Icon"];
-	if (not factionIcon) then
-		factionIcon = CreateFrame("Button", factionRowName.."Icon", factionRow, "FFF_FactionButtonTemplate");
-		factionIcon:SetPoint("LEFT", factionRow, "RIGHT",2,0);
-		factionRow:HookScript("OnEnter", FFF_FactionButtonTooltip);
-	end
-
-	factionIcon.index = factionRow.index;
-
-	local potential = FFF_GetFactionPotential(factionRow.index);
-	if ( ((hasRep) or (not isHeader)) and (potential > 0) ) then
-		factionIcon:Show();
-	else
-		factionIcon:Hide();
-	end
-end
 
 function FFF_FactionButtonTooltip(self)
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");

@@ -6,9 +6,10 @@
 -- make it easier to maintain in the long run. 
 -----------------------------------------------
 
-FFF_ReputationWatchBar_Classic = {};
+GFW_FactionFriend.ReputationWatchBar = {};
+local WatchBar = GFW_FactionFriend.ReputationWatchBar;
 
-function FFF_ReputationWatchBar_Classic.Update()
+function WatchBar.Update()
     local name, standing, min, max, value, factionID = GetWatchedFactionInfo();
     if (not name) then return; end
 
@@ -24,9 +25,9 @@ function FFF_ReputationWatchBar_Classic.Update()
         FFF_ReputationTick:SetPoint("CENTER", bar, "CENTER", 0, 0);
         
         -- first time seeing ReputationBar means time to hook it
-        bar:HookScript("OnEnter", FFF_ReputationWatchBar.OnEnter);
-        bar:HookScript("OnLeave", FFF_ReputationWatchBar.OnLeave);
-        bar:HookScript("OnMouseDown", FFF_ReputationWatchBar.OnClick);
+        bar:HookScript("OnEnter", WatchBar.OnEnter);
+        bar:HookScript("OnLeave", WatchBar.OnLeave);
+        bar:HookScript("OnMouseDown", WatchBar.OnClick);
     end
 
     local standingText;
@@ -45,7 +46,7 @@ function FFF_ReputationWatchBar_Classic.Update()
     local tickSet = math.max(tickSet, 0);
     local tickSet = math.min(tickSet, ReputationWatchBar:GetWidth());
     FFF_ReputationTick:ClearAllPoints();
-    if (potential == 0 or not FFF_Config or not FFF_Config.ShowPotential) then
+    if (potential == 0 or not GFW_FactionFriend.Config or not GFW_FactionFriend.Config.ShowPotential) then
         FFF_ReputationTick:Hide();
         FFF_ReputationExtraFillBarTexture:Hide();
     else
@@ -67,5 +68,8 @@ function FFF_ReputationWatchBar_Classic.Update()
             FFF_ReputationExtraFillBarTexture:SetVertexColor(color.r, color.g, color.b, 0.15);
         end
     end
+end
 
+function WatchBar.RegisterFunctions()
+    hooksecurefunc("MainMenuBar_UpdateExperienceBars", WatchBar.Update);
 end

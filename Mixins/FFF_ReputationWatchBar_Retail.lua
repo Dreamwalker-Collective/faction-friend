@@ -1,12 +1,23 @@
 -----------------------------------------------
--- FFF_ReputationWatchBar_Retail.lua
+-- WatchBar_Retail.lua
 --
 -- The Reputation/Exp Bar has been revamped a
 -- few times, so we've extracted this out to
 -- make it easier to maintain in the long run. 
 -----------------------------------------------
 
-function FFF_ReputationWatchBar_Update(newLevel)
+GFW_FactionFriend.ReputationWatchBar = {};
+local WatchBar = GFW_FactionFriend.ReputationWatchBar;
+
+local function FFF_GetReputationWatchBar()
+    for _, bar in pairs(StatusTrackingBarManager.bars) do
+        if bar.priority == 1 then -- this seems really fragile
+            return bar
+        end
+    end
+end
+
+function WatchBar.Update(newLevel)
     
     local bar = FFF_GetReputationWatchBar()
     if bar == nil then
@@ -23,9 +34,9 @@ function FFF_ReputationWatchBar_Update(newLevel)
         FFF_ReputationTick:SetPoint("CENTER", bar, "CENTER", 0, 0)
         
         -- first time seeing ReputationBar means time to hook it
-        bar:HookScript("OnEnter", FFF_ReputationWatchBar_OnEnter)
-        bar:HookScript("OnLeave", FFF_ReputationWatchBar_OnLeave)
-        bar:HookScript("OnMouseDown", FFF_ReputationWatchBar_OnClick)
+        bar:HookScript("OnEnter", WatchBar.OnEnter)
+        bar:HookScript("OnLeave", WatchBar.OnLeave)
+        bar:HookScript("OnMouseDown", WatchBar.OnClick)
     end
     
     
@@ -62,7 +73,7 @@ function FFF_ReputationWatchBar_Update(newLevel)
     local tickSet = math.max(tickSet, 0);
     local tickSet = math.min(tickSet, statusBar:GetWidth());
     FFF_ReputationTick:ClearAllPoints();
-    if (potential == 0 or not FFF_Config or not FFF_Config.ShowPotential) then
+    if (potential == 0 or not GFW_FactionFriend.Config or not GFW_FactionFriend.Config.ShowPotential) then
         FFF_ReputationTick:Hide();
         FFF_ReputationExtraFillBarTexture:Hide();
     else
@@ -87,10 +98,26 @@ function FFF_ReputationWatchBar_Update(newLevel)
     end
 end
 
-local function FFF_GetReputationWatchBar()
-    for _, bar in pairs(StatusTrackingBarManager.bars) do
-        if bar.priority == 1 then -- this seems really fragile
-            return bar
-        end
+function WatchBar.SetRowType(factionRow, isChild, isHeader, hasRep)
+    local factionRowName = factionRow:GetName()
+
+    local factionIcon = _G[factionRowName.."Icon"];
+    if (not factionIcon) then
+        factionIcon = CreateFrame("Button", factionRowName.."Icon", factionRow, "FFF_FactionButtonTemplate");
+        factionIcon:SetPoint("LEFT", factionRow, "RIGHT",2,0);
+        factionRow:HookScript("OnEnter", FFF_FactionButtonTooltip);
     end
+
+    factionIcon.index = factionRow.index;
+
+    local potential = FFF_GetFactionPotential(factionRow.index);
+    if ( ((hasRep) or (not isHeader)) and (potential > 0) ) then
+        factionIcon:Show();
+    else
+        factionIcon:Hide();
+    end
+end
+
+function WatchBar.RegisterFunctions()
+    hooksecurefunc("ReputationFrame_SetRowType", GFW_FactionFriend.ReputationWatchBar.SetRowType);
 end

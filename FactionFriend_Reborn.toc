@@ -30,12 +30,13 @@ Initialize.lua
 # Branching Mixins
 #@retail@
 Mixins\FFF_Utils_Retail.lua
+Mixins\FFF_ReputationWatchBar_Retail.lua
 #@end-retail@
 #@non-retail@
 Mixins\FFF_Utils_Classic.lua
+Mixins\FFF_ReputationWatchBar_Classic.lua
 #@end-non-retail@
 
-Mixins\FFF_ReputationWatchBar_Classic.lua
 FFF_ReputationWatchBar.lua
 
 FactionFriend.lua

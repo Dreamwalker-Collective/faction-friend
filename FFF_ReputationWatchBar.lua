@@ -1,20 +1,18 @@
--- TODO: Provide auto-detection of Classic vs Retail to use the right code
--- local isClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) should help with that
-FFF_ReputationWatchBar = FFF_ReputationWatchBar_Classic;
+local WatchBar = GFW_FactionFriend.ReputationWatchBar;
 
-function FFF_ReputationWatchBar.OnClick(self, button)
-    if (button == "RightButton" and not (FFF_Config.CombatDisableMenu and InCombatLockdown())) then
+function WatchBar.OnClick(self, button)
+    if (button == "RightButton" and not (GFW_FactionFriend.Config.CombatDisableMenu and InCombatLockdown())) then
         FFF_ShowMenu(1);
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
     end
 end
 
-function FFF_ReputationWatchBar.OnEnter(self)
-    if (not FFF_Config.ShowPotential) then return; end
+function WatchBar.OnEnter(self)
+    if (not GFW_FactionFriend.Config.ShowPotential) then return; end
     FFF_ShowingTooltip = FFF_ReputationTick_Tooltip(self);
 end
 
-function FFF_ReputationWatchBar.OnLeave()
+function WatchBar.OnLeave()
     FFF_ReputationTick:UnlockHighlight();
     if (FFF_ShowingTooltip ~= nil) then
         tooltip:Hide();
