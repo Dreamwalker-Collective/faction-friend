@@ -25,9 +25,9 @@ function WatchBar.Update()
         FFF_ReputationTick:SetPoint("CENTER", bar, "CENTER", 0, 0);
         
         -- first time seeing ReputationBar means time to hook it
-        bar:HookScript("OnEnter", FFF_ReputationWatchBar.OnEnter);
-        bar:HookScript("OnLeave", FFF_ReputationWatchBar.OnLeave);
-        bar:HookScript("OnMouseDown", FFF_ReputationWatchBar.OnClick);
+        bar:HookScript("OnEnter", WatchBar.OnEnter);
+        bar:HookScript("OnLeave", WatchBar.OnLeave);
+        bar:HookScript("OnMouseDown", WatchBar.OnClick);
     end
 
     local standingText;
@@ -71,5 +71,5 @@ function WatchBar.Update()
 end
 
 function WatchBar.RegisterFunctions()
-    hooksecurefunc("MainMenuBar_UpdateExperienceBars", FFF_ReputationWatchBar.Update);
+    hooksecurefunc("MainMenuBar_UpdateExperienceBars", WatchBar.Update);
 end

@@ -94,7 +94,7 @@ function FFF_AddTooltipLine(tooltip, leftText, factionID, isOnlyLine)
 	end
 end
 
-function GFW_FactionFriend:OnLoad(self)
+function GFW_FactionFriend_OnLoad(self)
 	GFW_FactionFriend.ReputationWatchBar.RegisterFunctions();
 	hooksecurefunc("SetWatchedFactionIndex", FFF_SetWatchedFactionIndex);
 	hooksecurefunc("CloseDropDownMenus", FFF_HideMenus);
@@ -148,7 +148,7 @@ function GFW_FactionFriend:OnEvent(self, event, arg1, arg2)
 		if (FFF_Config.ReputationColors) then
 			FACTION_BAR_COLORS = FFF_FACTION_BAR_COLORS;
 		end
-		FFF_ReputationWatchBar.Update();
+		GFW_FactionFriend.ReputationWatchBar.Update();
 		
 		--self:RegisterEvent("QUEST_LOG_UPDATE");
 	elseif( event == "PLAYER_LEAVING_WORLD" ) then
@@ -169,10 +169,10 @@ function GFW_FactionFriend:OnEvent(self, event, arg1, arg2)
 --	elseif( event == "QUEST_LOG_UPDATE" ) then
 --		FFF_BeginQuestScan();
 	elseif ( event == "BAG_UPDATE") then
-		FFF_ReputationWatchBar.Update();
+		GFW_FactionFriend.ReputationWatchBar.Update();
 	elseif ( event == "UNIT_INVENTORY_CHANGED") then
 		if (arg1 == "player") then
-			FFF_ReputationWatchBar.Update();
+			GFW_FactionFriend.ReputationWatchBar.Update();
 			if (FFF_Config.Tabard) then
 				local itemID = GetInventoryItemID("player", GetInventorySlotInfo("TabardSlot"));
 				if (itemID ~= FFF_LastTabardID) then
@@ -1027,17 +1027,6 @@ end
 -- ReputationWatchBar menu 
 ------------------------------------------------------
 
-GFW_FactionFriend.Menu = {};
-local menu = GFW_FactionFriend.Menu;
-
-menu.BORDER_HEIGHT = 15;
-menu.BUTTON_HEIGHT = 16;
-menu.BUTTON_MIN_WIDTH = 150;
-menu.BUTTON_TEXT_PADDING = 32;
-menu.BUTTON_BANG_WIDTH = 16;
-menu.BUTTON_CHECK_WIDTH = 25;
-menu.MAX_SIMPLE_MENU_COUNT = 35;
-
 
 function FFF_SetupMenuButton(menuFrame, level, index, data, isTitle, func, isHeader)
 	local buttonName = "FFF_Menu"..level.."Button"..index;
@@ -1098,8 +1087,8 @@ function FFF_SetupMenuButton(menuFrame, level, index, data, isTitle, func, isHea
 	end
 	
 	-- position
-	local yPos = -((index - 1) * menu.BUTTON_HEIGHT) - menu.BORDER_HEIGHT;
-	local xPos = menu.BORDER_HEIGHT;	-- it's border width too
+	local yPos = -((index - 1) * GFW_FactionFriend.Menu.BUTTON_HEIGHT) - GFW_FactionFriend.Menu.BORDER_HEIGHT;
+	local xPos = GFW_FactionFriend.Menu.BORDER_HEIGHT;	-- it's border width too
 	button:SetPoint("TOPLEFT", menuFrame, "TOPLEFT", xPos, yPos);
 		
 	-- name
@@ -1127,14 +1116,14 @@ function FFF_SetupMenuButton(menuFrame, level, index, data, isTitle, func, isHea
 		invisibleButton:Hide();
 		if (isHeader and level == 1 and arrow) then
 			arrow:Show();
-			width = width + menu.BUTTON_CHECK_WIDTH;
+			width = width + GFW_FactionFriend.Menu.BUTTON_CHECK_WIDTH;
 			button.isParent = 1;
 			button.factionName = name;
 		else
 			button.isParent = nil;
 		end
 		if (button.standing) then
-			normalText:SetPoint("LEFT", menu.BUTTON_CHECK_WIDTH, 0);
+			normalText:SetPoint("LEFT", GFW_FactionFriend.Menu.BUTTON_CHECK_WIDTH, 0);
 			if (button.standingText) then
 				levelText:SetText(button.standingText);
 			else
@@ -1151,7 +1140,7 @@ function FFF_SetupMenuButton(menuFrame, level, index, data, isTitle, func, isHea
 			else
 				bang:Hide();
 			end
-			width = width + menu.BUTTON_CHECK_WIDTH + levelText:GetWidth() + menu.BUTTON_TEXT_PADDING + menu.BUTTON_BANG_WIDTH;
+			width = width + GFW_FactionFriend.Menu.BUTTON_CHECK_WIDTH + levelText:GetWidth() + GFW_FactionFriend.Menu.BUTTON_TEXT_PADDING + GFW_FactionFriend.Menu.BUTTON_BANG_WIDTH;
 		else
 			normalText:SetPoint("LEFT",0,0);
 		end
@@ -1182,7 +1171,7 @@ function FFF_MenuButtonSetWidth(buttonName, width)
 		highlightRight:ClearAllPoints();
 		highlightRight:SetPoint("LEFT", (width * button.percent), 0);
 		highlightRight:SetPoint("RIGHT", 0, 0);
-		highlightRight:SetHeight(menu.BUTTON_HEIGHT);
+		highlightRight:SetHeight(GFW_FactionFriend.Menu.BUTTON_HEIGHT);
 	else
 		color = NORMAL_FONT_COLOR;
 		highlightLeft:SetPoint("RIGHT", 0, 0);
@@ -1190,7 +1179,7 @@ function FFF_MenuButtonSetWidth(buttonName, width)
 	end
 	highlightLeft:SetPoint("LEFT", 0, 0);
 	highlightLeft:SetVertexColor(color.r, color.g, color.b, 0.5);
-	highlightLeft:SetHeight(menu.BUTTON_HEIGHT);
+	highlightLeft:SetHeight(GFW_FactionFriend.Menu.BUTTON_HEIGHT);
 	
 end
 
@@ -1220,14 +1209,14 @@ function FFF_MenuButton_OnEnter(self, motion)
 		_G[self:GetName().."HighlightRight"]:Show();
 	end
 	
-	FFF_Menu_StopCounting(self:GetParent());
+	GFW_FactionFriend.Menu:StopCounting(self:GetParent());
 end
 
 function FFF_MenuButton_OnLeave(self, motion)
 	_G[self:GetName().."HighlightLeft"]:Hide();
 	_G[self:GetName().."HighlightRight"]:Hide();
 	
-	FFF_Menu_StartCounting(self:GetParent());
+	GFW_FactionFriend.Menu:StartCounting(self:GetParent());
 end
 
 function FFF_HideMenus(startLevel)
@@ -1265,7 +1254,7 @@ function FFF_ShowMenu(level, parentName, parentFrame)
 		local count;
 		FFF_FactionTree, count = FFF_BuildFactionTree();
 
-		if (count < FFF_MAX_SIMPLE_MENU_COUNT) then
+		if (count < GFW_FactionFriend.Menu.MAX_SIMPLE_MENU_COUNT) then
 			for _, header in pairs(FFF_FactionTree) do
 
 				-- major faction group header
@@ -1280,15 +1269,15 @@ function FFF_ShowMenu(level, parentName, parentFrame)
 							numMenuItems = numMenuItems + 1;
 							local button, width = FFF_SetupMenuButton(menuFrame, level, numMenuItems, item, not item.hasRep);
 							local normalText = _G[button:GetName().."NormalText"];
-							normalText:SetPoint("LEFT", menu.BUTTON_CHECK_WIDTH, 0);
-							maxWidth = math.max(width + menu.BUTTON_CHECK_WIDTH, maxWidth);
+							normalText:SetPoint("LEFT", GFW_FactionFriend.Menu.BUTTON_CHECK_WIDTH, 0);
+							maxWidth = math.max(width + GFW_FactionFriend.Menu.BUTTON_CHECK_WIDTH, maxWidth);
 						
 							for _, subItem in pairs(item.children) do
 								numMenuItems = numMenuItems + 1;
 								local button, width = FFF_SetupMenuButton(menuFrame, level, numMenuItems, subItem);
 								local normalText = _G[button:GetName().."NormalText"];
-								normalText:SetPoint("LEFT", menu.BUTTON_CHECK_WIDTH * 2, 0);
-								maxWidth = math.max(width + menu.BUTTON_CHECK_WIDTH * 2, maxWidth);
+								normalText:SetPoint("LEFT", GFW_FactionFriend.Menu.BUTTON_CHECK_WIDTH * 2, 0);
+								maxWidth = math.max(width + GFW_FactionFriend.Menu.BUTTON_CHECK_WIDTH * 2, maxWidth);
 							end
 						end
 					else
@@ -1359,15 +1348,15 @@ function FFF_ShowMenu(level, parentName, parentFrame)
 							numMenuItems = numMenuItems + 1;
 							local button, width = FFF_SetupMenuButton(menuFrame, level, numMenuItems, item, not item.hasRep);
 							local normalText = _G[button:GetName().."NormalText"];
-							normalText:SetPoint("LEFT", menu.BUTTON_CHECK_WIDTH, 0);
-							maxWidth = math.max(width + menu.BUTTON_CHECK_WIDTH, maxWidth);
+							normalText:SetPoint("LEFT", GFW_FactionFriend.Menu.BUTTON_CHECK_WIDTH, 0);
+							maxWidth = math.max(width + GFW_FactionFriend.Menu.BUTTON_CHECK_WIDTH, maxWidth);
 							
 							for _, subItem in pairs(item.children) do
 								numMenuItems = numMenuItems + 1;
 								local button, width = FFF_SetupMenuButton(menuFrame, level, numMenuItems, subItem);
 								local normalText = _G[button:GetName().."NormalText"];
-								normalText:SetPoint("LEFT", menu.BUTTON_CHECK_WIDTH * 2, 0);
-								maxWidth = math.max(width + menu.BUTTON_CHECK_WIDTH * 2, maxWidth);
+								normalText:SetPoint("LEFT", GFW_FactionFriend.Menu.BUTTON_CHECK_WIDTH * 2, 0);
+								maxWidth = math.max(width + GFW_FactionFriend.Menu.BUTTON_CHECK_WIDTH * 2, maxWidth);
 							end
 						end
 					else
@@ -1387,8 +1376,8 @@ function FFF_ShowMenu(level, parentName, parentFrame)
 		local buttonName = "FFF_Menu"..level.."Button"..menuItemIndex;
 		FFF_MenuButtonSetWidth(buttonName, maxWidth);
 	end
-	menuWidth = maxWidth + menu.BORDER_HEIGHT * 2;
-	menuFrame:SetHeight((numMenuItems * menu.BUTTON_HEIGHT) + (menu.BORDER_HEIGHT * 2));
+	menuWidth = maxWidth + GFW_FactionFriend.Menu.BORDER_HEIGHT * 2;
+	menuFrame:SetHeight((numMenuItems * GFW_FactionFriend.Menu.BUTTON_HEIGHT) + (GFW_FactionFriend.Menu.BORDER_HEIGHT * 2));
 	menuFrame:SetWidth(menuWidth);
 	
 	-- hide unused children
@@ -1405,10 +1394,10 @@ function FFF_ShowMenu(level, parentName, parentFrame)
 		-- submenu
 		local left, bottom, width, height = parentFrame:GetRect();
 		-- parent frame is the menu *button* to which we're attached
-		local menuBottom = -menu.BORDER_HEIGHT;
-		if (bottom - menu.BORDER_HEIGHT + menuHeight > GetScreenHeight()) then
+		local menuBottom = -GFW_FactionFriend.Menu.BORDER_HEIGHT;
+		if (bottom - GFW_FactionFriend.Menu.BORDER_HEIGHT + menuHeight > GetScreenHeight()) then
 			-- adjust bottom so top fits in screen
-			menuBottom = GetScreenHeight() - menu.BORDER_HEIGHT - menuHeight - bottom;
+			menuBottom = GetScreenHeight() - GFW_FactionFriend.Menu.BORDER_HEIGHT - menuHeight - bottom;
 		end
 		if (left + width + menuWidth > GetScreenWidth()) then
 			-- move to other side of parent menu so we stay onscreen
@@ -1434,7 +1423,7 @@ function FFF_ShowMenu(level, parentName, parentFrame)
 end
 
 -- If dropdown is visible then see if its timer has expired, if so hide the frame
-function FFF_Menu_OnUpdate(self, elapsed)
+function GFW_FactionFriend.Menu:OnUpdate(elapsed)
 	if ( not self.showTimer or not self.isCounting ) then
 		return;
 	elseif ( self.showTimer < 0 ) then
@@ -1447,9 +1436,9 @@ function FFF_Menu_OnUpdate(self, elapsed)
 end
 
 -- Start the countdown on a frame
-function FFF_Menu_StartCounting(frame)
+function GFW_FactionFriend.Menu:StartCounting(frame)
 	if ( frame.parentMenu ) then
-		FFF_Menu_StartCounting(frame.parentMenu);
+		GFW_FactionFriend.Menu:StartCounting(frame.parentMenu);
 	else
 		frame.showTimer = UIDROPDOWNMENU_SHOW_TIME;
 		frame.isCounting = 1;
@@ -1457,9 +1446,9 @@ function FFF_Menu_StartCounting(frame)
 end
 
 -- Stop the countdown on a frame
-function FFF_Menu_StopCounting(frame)
+function GFW_FactionFriend.Menu:StopCounting(frame)
 	if ( frame.parentMenu ) then
-		FFF_Menu_StopCounting(frame.parentMenu);
+		GFW_FactionFriend.Menu:StopCounting(frame.parentMenu);
 	else
 		frame.isCounting = nil;
 	end

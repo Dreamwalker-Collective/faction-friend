@@ -25,9 +25,9 @@ function WatchBar.Update(newLevel)
         FFF_ReputationTick:SetPoint("CENTER", bar, "CENTER", 0, 0)
         
         -- first time seeing ReputationBar means time to hook it
-        bar:HookScript("OnEnter", FFF_ReputationWatchBar_OnEnter)
-        bar:HookScript("OnLeave", FFF_ReputationWatchBar_OnLeave)
-        bar:HookScript("OnMouseDown", FFF_ReputationWatchBar_OnClick)
+        bar:HookScript("OnEnter", GFW_FactionFriend.ReputationWatchBar.OnEnter)
+        bar:HookScript("OnLeave", GFW_FactionFriend.ReputationWatchBar.OnLeave)
+        bar:HookScript("OnMouseDown", GFW_FactionFriend.ReputationWatchBar.OnClick)
     end
     
     

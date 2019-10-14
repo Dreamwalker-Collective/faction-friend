@@ -24,6 +24,16 @@ FFF_FACTION_BAR_COLORS = {
     [8] = {r = 0, g = 0.7, b = 0.8},    -- Exalted
 };
 
+GFW_FactionFriend.Menu = {
+    BORDER_HEIGHT = 15,
+    BUTTON_HEIGHT = 16,
+    BUTTON_MIN_WIDTH = 150,
+    BUTTON_TEXT_PADDING = 32,
+    BUTTON_BANG_WIDTH = 16,
+    BUTTON_CHECK_WIDTH = 25,
+    MAX_SIMPLE_MENU_COUNT = 35,
+};
+
 
 function GFW_FactionFriend:OnProfileChanged(event, database, newProfileKey)
     -- this is called every time our profile changes (after the change)
@@ -36,7 +46,7 @@ end
 
 local function setProfileOption(info, value)
     FFF_Config[info.arg] = value
-    FFF_ReputationWatchBar:Update();
+    GFW_FactionFriend.ReputationWatchBar.Update();
     if (FFF_Config.MoveExaltedInactive) then
         -- move any already exalted factions when the preference is first enabled
         FFF_MoveExaltedFactionsInactive();

@@ -5,7 +5,7 @@
 ## Interface: 11302
 #@end-non-retail@
 ## Version: @project-version@
-## Author: Dragonwolf Dreamwalker
+## Author: Gazmit Fizzwidget, Dragonwolf Dreamwalker
 ## X-Website: https://dreamwalker-collective.github.io/
 ## Title: FactionFriend Reborn
 ## Notes: Switches WoW's builtin reputation watch bar automatically and helps keep track of faction turnin items.
@@ -23,9 +23,9 @@ LocaleSupport.lua
 Localization.lua
 FFF_ItemInfo.lua
 
-FFF_ReputationWatchBar.xml
-
 Initialize.lua
+
+FFF_ReputationWatchBar.lua
 
 # Branching Mixins
 #@retail@
@@ -37,7 +37,7 @@ Mixins\FFF_Utils_Classic.lua
 Mixins\FFF_ReputationWatchBar_Classic.lua
 #@end-non-retail@
 
-FFF_ReputationWatchBar.lua
-
 FactionFriend.lua
+
+FFF_ReputationWatchBar.xml
 FactionFriend.xml
