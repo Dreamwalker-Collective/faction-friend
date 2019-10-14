@@ -1027,13 +1027,16 @@ end
 -- ReputationWatchBar menu 
 ------------------------------------------------------
 
-FFF_MENU_BORDER_HEIGHT = 15;
-FFF_MENU_BUTTON_HEIGHT = 16;
-FFF_MENU_BUTTON_MIN_WIDTH = 150;
-FFF_MENU_BUTTON_TEXT_PADDING = 32;
-FFF_MENU_BUTTON_BANG_WIDTH = 16;
-FFF_MENU_BUTTON_CHECK_WIDTH = 25;
-FFF_MAX_SIMPLE_MENU_COUNT = 35;
+GFW_FactionFriend.Menu = {};
+local menu = GFW_FactionFriend.Menu;
+
+menu.BORDER_HEIGHT = 15;
+menu.BUTTON_HEIGHT = 16;
+menu.BUTTON_MIN_WIDTH = 150;
+menu.BUTTON_TEXT_PADDING = 32;
+menu.BUTTON_BANG_WIDTH = 16;
+menu.BUTTON_CHECK_WIDTH = 25;
+menu.MAX_SIMPLE_MENU_COUNT = 35;
 
 
 function FFF_SetupMenuButton(menuFrame, level, index, data, isTitle, func, isHeader)
@@ -1095,8 +1098,8 @@ function FFF_SetupMenuButton(menuFrame, level, index, data, isTitle, func, isHea
 	end
 	
 	-- position
-	local yPos = -((index - 1) * FFF_MENU_BUTTON_HEIGHT) - FFF_MENU_BORDER_HEIGHT;
-	local xPos = FFF_MENU_BORDER_HEIGHT;	-- it's border width too
+	local yPos = -((index - 1) * menu.BUTTON_HEIGHT) - menu.BORDER_HEIGHT;
+	local xPos = menu.BORDER_HEIGHT;	-- it's border width too
 	button:SetPoint("TOPLEFT", menuFrame, "TOPLEFT", xPos, yPos);
 		
 	-- name
@@ -1124,14 +1127,14 @@ function FFF_SetupMenuButton(menuFrame, level, index, data, isTitle, func, isHea
 		invisibleButton:Hide();
 		if (isHeader and level == 1 and arrow) then
 			arrow:Show();
-			width = width + FFF_MENU_BUTTON_CHECK_WIDTH;
+			width = width + menu.BUTTON_CHECK_WIDTH;
 			button.isParent = 1;
 			button.factionName = name;
 		else
 			button.isParent = nil;
 		end
 		if (button.standing) then
-			normalText:SetPoint("LEFT", FFF_MENU_BUTTON_CHECK_WIDTH, 0);
+			normalText:SetPoint("LEFT", menu.BUTTON_CHECK_WIDTH, 0);
 			if (button.standingText) then
 				levelText:SetText(button.standingText);
 			else
@@ -1148,7 +1151,7 @@ function FFF_SetupMenuButton(menuFrame, level, index, data, isTitle, func, isHea
 			else
 				bang:Hide();
 			end
-			width = width + FFF_MENU_BUTTON_CHECK_WIDTH + levelText:GetWidth() + FFF_MENU_BUTTON_TEXT_PADDING + FFF_MENU_BUTTON_BANG_WIDTH;
+			width = width + menu.BUTTON_CHECK_WIDTH + levelText:GetWidth() + menu.BUTTON_TEXT_PADDING + menu.BUTTON_BANG_WIDTH;
 		else
 			normalText:SetPoint("LEFT",0,0);
 		end
@@ -1179,7 +1182,7 @@ function FFF_MenuButtonSetWidth(buttonName, width)
 		highlightRight:ClearAllPoints();
 		highlightRight:SetPoint("LEFT", (width * button.percent), 0);
 		highlightRight:SetPoint("RIGHT", 0, 0);
-		highlightRight:SetHeight(FFF_MENU_BUTTON_HEIGHT);
+		highlightRight:SetHeight(menu.BUTTON_HEIGHT);
 	else
 		color = NORMAL_FONT_COLOR;
 		highlightLeft:SetPoint("RIGHT", 0, 0);
@@ -1187,7 +1190,7 @@ function FFF_MenuButtonSetWidth(buttonName, width)
 	end
 	highlightLeft:SetPoint("LEFT", 0, 0);
 	highlightLeft:SetVertexColor(color.r, color.g, color.b, 0.5);
-	highlightLeft:SetHeight(FFF_MENU_BUTTON_HEIGHT);
+	highlightLeft:SetHeight(menu.BUTTON_HEIGHT);
 	
 end
 
@@ -1277,15 +1280,15 @@ function FFF_ShowMenu(level, parentName, parentFrame)
 							numMenuItems = numMenuItems + 1;
 							local button, width = FFF_SetupMenuButton(menuFrame, level, numMenuItems, item, not item.hasRep);
 							local normalText = _G[button:GetName().."NormalText"];
-							normalText:SetPoint("LEFT", FFF_MENU_BUTTON_CHECK_WIDTH, 0);
-							maxWidth = math.max(width + FFF_MENU_BUTTON_CHECK_WIDTH, maxWidth);
+							normalText:SetPoint("LEFT", menu.BUTTON_CHECK_WIDTH, 0);
+							maxWidth = math.max(width + menu.BUTTON_CHECK_WIDTH, maxWidth);
 						
 							for _, subItem in pairs(item.children) do
 								numMenuItems = numMenuItems + 1;
 								local button, width = FFF_SetupMenuButton(menuFrame, level, numMenuItems, subItem);
 								local normalText = _G[button:GetName().."NormalText"];
-								normalText:SetPoint("LEFT", FFF_MENU_BUTTON_CHECK_WIDTH * 2, 0);
-								maxWidth = math.max(width + FFF_MENU_BUTTON_CHECK_WIDTH * 2, maxWidth);
+								normalText:SetPoint("LEFT", menu.BUTTON_CHECK_WIDTH * 2, 0);
+								maxWidth = math.max(width + menu.BUTTON_CHECK_WIDTH * 2, maxWidth);
 							end
 						end
 					else
@@ -1356,15 +1359,15 @@ function FFF_ShowMenu(level, parentName, parentFrame)
 							numMenuItems = numMenuItems + 1;
 							local button, width = FFF_SetupMenuButton(menuFrame, level, numMenuItems, item, not item.hasRep);
 							local normalText = _G[button:GetName().."NormalText"];
-							normalText:SetPoint("LEFT", FFF_MENU_BUTTON_CHECK_WIDTH, 0);
-							maxWidth = math.max(width + FFF_MENU_BUTTON_CHECK_WIDTH, maxWidth);
+							normalText:SetPoint("LEFT", menu.BUTTON_CHECK_WIDTH, 0);
+							maxWidth = math.max(width + menu.BUTTON_CHECK_WIDTH, maxWidth);
 							
 							for _, subItem in pairs(item.children) do
 								numMenuItems = numMenuItems + 1;
 								local button, width = FFF_SetupMenuButton(menuFrame, level, numMenuItems, subItem);
 								local normalText = _G[button:GetName().."NormalText"];
-								normalText:SetPoint("LEFT", FFF_MENU_BUTTON_CHECK_WIDTH * 2, 0);
-								maxWidth = math.max(width + FFF_MENU_BUTTON_CHECK_WIDTH * 2, maxWidth);
+								normalText:SetPoint("LEFT", menu.BUTTON_CHECK_WIDTH * 2, 0);
+								maxWidth = math.max(width + menu.BUTTON_CHECK_WIDTH * 2, maxWidth);
 							end
 						end
 					else
@@ -1384,8 +1387,8 @@ function FFF_ShowMenu(level, parentName, parentFrame)
 		local buttonName = "FFF_Menu"..level.."Button"..menuItemIndex;
 		FFF_MenuButtonSetWidth(buttonName, maxWidth);
 	end
-	menuWidth = maxWidth + FFF_MENU_BORDER_HEIGHT * 2;
-	menuFrame:SetHeight((numMenuItems * FFF_MENU_BUTTON_HEIGHT) + (FFF_MENU_BORDER_HEIGHT * 2));
+	menuWidth = maxWidth + menu.BORDER_HEIGHT * 2;
+	menuFrame:SetHeight((numMenuItems * menu.BUTTON_HEIGHT) + (menu.BORDER_HEIGHT * 2));
 	menuFrame:SetWidth(menuWidth);
 	
 	-- hide unused children
@@ -1402,10 +1405,10 @@ function FFF_ShowMenu(level, parentName, parentFrame)
 		-- submenu
 		local left, bottom, width, height = parentFrame:GetRect();
 		-- parent frame is the menu *button* to which we're attached
-		local menuBottom = -FFF_MENU_BORDER_HEIGHT;
-		if (bottom - FFF_MENU_BORDER_HEIGHT + menuHeight > GetScreenHeight()) then
+		local menuBottom = -menu.BORDER_HEIGHT;
+		if (bottom - menu.BORDER_HEIGHT + menuHeight > GetScreenHeight()) then
 			-- adjust bottom so top fits in screen
-			menuBottom = GetScreenHeight() - FFF_MENU_BORDER_HEIGHT - menuHeight - bottom;
+			menuBottom = GetScreenHeight() - menu.BORDER_HEIGHT - menuHeight - bottom;
 		end
 		if (left + width + menuWidth > GetScreenWidth()) then
 			-- move to other side of parent menu so we stay onscreen
