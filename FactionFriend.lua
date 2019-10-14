@@ -94,8 +94,8 @@ function FFF_AddTooltipLine(tooltip, leftText, factionID, isOnlyLine)
 	end
 end
 
-function FFF_OnLoad(self)
-	hooksecurefunc("MainMenuBar_UpdateExperienceBars", FFF_ReputationWatchBar.Update);
+function GFW_FactionFriend:OnLoad(self)
+	GFW_FactionFriend.ReputationWatchBar.RegisterFunctions();
 	hooksecurefunc("SetWatchedFactionIndex", FFF_SetWatchedFactionIndex);
 	hooksecurefunc("CloseDropDownMenus", FFF_HideMenus);
 	ReputationFrame:HookScript("OnHide", GameTooltip_Hide);
@@ -140,7 +140,7 @@ function FFF_OnLoad(self)
 		
 end
 
-function FFF_OnEvent(self, event, arg1, arg2)
+function GFW_FactionFriend:OnEvent(self, event, arg1, arg2)
 	if ( event == "PLAYER_ENTERING_WORLD" --[[or (event == "ADDON_LOADED" and arg1 == addonName)]]) then
 		self:RegisterEvent("BAG_UPDATE");
 		self:RegisterEvent("UNIT_INVENTORY_CHANGED");
@@ -1016,26 +1016,6 @@ end
 ------------------------------------------------------
 -- reputation frame additions 
 ------------------------------------------------------
-
-function FFF_ReputationFrame_SetRowType(factionRow, isChild, isHeader, hasRep)
-	local factionRowName = factionRow:GetName()
-
-	local factionIcon = _G[factionRowName.."Icon"];
-	if (not factionIcon) then
-		factionIcon = CreateFrame("Button", factionRowName.."Icon", factionRow, "FFF_FactionButtonTemplate");
-		factionIcon:SetPoint("LEFT", factionRow, "RIGHT",2,0);
-		factionRow:HookScript("OnEnter", FFF_FactionButtonTooltip);
-	end
-
-	factionIcon.index = factionRow.index;
-
-	local potential = FFF_GetFactionPotential(factionRow.index);
-	if ( ((hasRep) or (not isHeader)) and (potential > 0) ) then
-		factionIcon:Show();
-	else
-		factionIcon:Hide();
-	end
-end
 
 function FFF_FactionButtonTooltip(self)
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");

@@ -3,8 +3,8 @@
 
 	<Frame name="FFF_HandlerFrame"> 
 		<Scripts> 
-			<OnLoad function="FFF_OnLoad"/>
-			<OnEvent function="FFF_OnEvent"/>
+			<OnLoad function="GFW_FactionFriend:OnLoad"/>
+			<OnEvent function="GFW_FactionFriend:OnEvent"/>
 			<!--<OnUpdate function="FFF_OnUpdate"/>-->
 		</Scripts> 
 	</Frame> 

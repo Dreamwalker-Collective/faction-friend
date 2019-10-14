@@ -1,6 +1,4 @@
--- TODO: Provide auto-detection of Classic vs Retail to use the right code
--- local isClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) should help with that
-FFF_ReputationWatchBar = FFF_ReputationWatchBar_Classic;
+GFW_FactionFriend.ReputationWatchBar = {};
 
 function FFF_ReputationWatchBar.OnClick(self, button)
     if (button == "RightButton" and not (FFF_Config.CombatDisableMenu and InCombatLockdown())) then

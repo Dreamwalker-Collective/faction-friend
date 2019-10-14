@@ -6,9 +6,10 @@
 -- make it easier to maintain in the long run. 
 -----------------------------------------------
 
-FFF_ReputationWatchBar_Classic = {};
 
-function FFF_ReputationWatchBar_Classic.Update()
+local WatchBar = GFW_FactionFriend.ReputationWatchBar;
+
+function WatchBar.Update()
     local name, standing, min, max, value, factionID = GetWatchedFactionInfo();
     if (not name) then return; end
 
@@ -67,5 +68,8 @@ function FFF_ReputationWatchBar_Classic.Update()
             FFF_ReputationExtraFillBarTexture:SetVertexColor(color.r, color.g, color.b, 0.15);
         end
     end
+end
 
+function WatchBar.RegisterFunctions()
+    hooksecurefunc("MainMenuBar_UpdateExperienceBars", FFF_ReputationWatchBar.Update);
 end
