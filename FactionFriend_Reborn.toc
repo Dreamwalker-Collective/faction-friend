@@ -11,7 +11,7 @@
 ## Notes: Switches WoW's builtin reputation watch bar automatically and helps keep track of faction turnin items.
 ## X-Category: Interface Enhancements
 ## SavedVariables: GFW_FactionFriend_DB
-## SavedVariablesPerCharacter: FFF_RecentFactions, FFF_LastTabardID
+## SavedVariablesPerCharacter: GFW_FactionFriend.RecentFactions, FFF_LastTabardID
 ## X-LoadOn-Hooks: MainMenuBar_UpdateExperienceBars
 
 GFWUtils.lua

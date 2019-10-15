@@ -3,24 +3,24 @@
 ------------------------------------------------------
 local addonName, addonTable = ...; 
 
-FFF_LastBarSwitchTime = 0;
-FFF_LastRepGainTime = 0;
-FFF_RecentFactions = {};
-FFF_QueuedMessageFrames = {};
+GFW_FactionFriend.LastBarSwitchTime = 0;
+GFW_FactionFriend.LastRepGainTime = 0;
+GFW_FactionFriend.RecentFactions = {};
+GFW_FactionFriend.QueuedMessageFrames = {};
 
-FFF_MAX_RECENTS = 10;
-FFF_MAX_FACTIONS = 300;	-- infinite loop protection
+GFW_FactionFriend.MAX_RECENTS = 10;
+GFW_FactionFriend.MAX_FACTIONS = 300;	-- infinite loop protection
 
 
-function FFF_HookTooltip(frame)
+function GFW_FactionFriend:HookTooltip(frame)
 	if (frame:GetScript("OnTooltipSetItem")) then
-		frame:HookScript("OnTooltipSetItem", FFF_OnTooltipSetItem);
+		frame:HookScript("OnTooltipSetItem", GFW_FactionFriend.OnTooltipSetItem);
 	else
-		frame:SetScript("OnTooltipSetItem", FFF_OnTooltipSetItem);
+		frame:SetScript("OnTooltipSetItem", GFW_FactionFriend.OnTooltipSetItem);
 	end
 end
 
-function FFF_OnTooltipSetItem(self)
+function GFW_FactionFriend.OnTooltipSetItem(self)
 	
 	local name, link = self:GetItem();
 	if (not link) then return; end
@@ -35,12 +35,12 @@ function FFF_OnTooltipSetItem(self)
 		local itemInfo = FFF_ReverseCache[itemID];
 		if (itemInfo) then
 			if (type(itemInfo) == "table") then
-				FFF_AddTooltipLine(self, FFF_FACTION_TURNIN..":", itemInfo[1]);
+				GFW_FactionFriend:AddTooltipLine(self, FFF_FACTION_TURNIN..":", itemInfo[1]);
 				for i = 2, #itemInfo do
-					FFF_AddTooltipLine(self, " ", itemInfo[i]);
+					GFW_FactionFriend:AddTooltipLine(self, " ", itemInfo[i]);
 				end
 			else
-				FFF_AddTooltipLine(self, FFF_FACTION_TURNIN, itemInfo, 1);
+				GFW_FactionFriend:AddTooltipLine(self, FFF_FACTION_TURNIN, itemInfo, 1);
 			end
 		end
 		
@@ -68,7 +68,7 @@ function FFF_OnTooltipSetItem(self)
 	
 end
 
-function FFF_AddTooltipLine(tooltip, leftText, factionID, isOnlyLine)
+function GFW_FactionFriend:AddTooltipLine(tooltip, leftText, factionID, isOnlyLine)
 	local factionText, _, standingID = GetFactionInfoByID(factionID);
 	if (FFF_Notes[itemID] and FFF_Notes[itemID][faction]) then
 		factionText = factionText.." ("..FFF_Notes[itemID][faction]..")";
@@ -100,10 +100,10 @@ function GFW_FactionFriend_OnLoad(self)
 	hooksecurefunc("CloseDropDownMenus", FFF_HideMenus);
 	ReputationFrame:HookScript("OnHide", GameTooltip_Hide);
 	
-	FFF_HookTooltip(GameTooltip);
-	FFF_HookTooltip(ItemRefTooltip);
+	GFW_FactionFriend:HookTooltip(GameTooltip);
+	GFW_FactionFriend:HookTooltip(ItemRefTooltip);
 
-	FFF_RecentFactions = {};
+	GFW_FactionFriend.RecentFactions = {};
 	
 	FFF_FactionNamesByID = {};
 	setmetatable(FFF_FactionNamesByID, {__index = function(tbl,key) return (GetFactionInfoByID(key)); end});
@@ -205,7 +205,7 @@ function FFF_CombatMessageFactionFilter(frame, event, message, ...)
 	end
 
 	FFF_AddToRecentFactions(factionName);
-	if ((amount > 0) and (GetTime() - FFF_LastRepGainTime > 5) and ((origFactionName ~= GUILD_REPUTATION) or (not FFF_Config.NoGuildAutoswitch)) and ((not FFF_FactionIsBodyguard(factionName)) or (not FFF_Config.NoBodyguardAutoswitch))) then
+	if ((amount > 0) and (GetTime() - GFW_FactionFriend.LastRepGainTime > 5) and ((origFactionName ~= GUILD_REPUTATION) or (not FFF_Config.NoGuildAutoswitch)) and ((not FFF_FactionIsBodyguard(factionName)) or (not FFF_Config.NoBodyguardAutoswitch))) then
 		if (not FFF_Config.Zones) then
 			FFF_SetWatchedFactionConditional(factionName);
 		else
@@ -217,7 +217,7 @@ function FFF_CombatMessageFactionFilter(frame, event, message, ...)
 		end
 	end
 
-	FFF_LastRepGainTime = GetTime();
+	GFW_FactionFriend.LastRepGainTime = GetTime();
 	local index, _, _, standing, min, max, value = FFF_GetFactionInfoByName(factionName);
 	if (FFF_Config.MoveExaltedInactive and GFW_FactionFriend.Utils.isExalted(standing, factionID)) then
 		SetFactionInactive(index);
@@ -231,8 +231,8 @@ function FFF_CombatMessageFactionFilter(frame, event, message, ...)
 			FFF_QueuedMessageFaction = factionName;
 			FFF_QueuedMessageOriginal = message;
 			FFF_QueuedMessageAmount = amount;
-			if (not FFF_QueuedMessageFrames[frame]) then
-				FFF_QueuedMessageFrames[frame] = true;
+			if (not GFW_FactionFriend.QueuedMessageFrames[frame]) then
+				GFW_FactionFriend.QueuedMessageFrames[frame] = true;
 			end
 			return true;
 		else
@@ -262,10 +262,10 @@ function FFF_SystemMessageFactionFilter(frame, event, message, ...)
 		-- because the gain message came in before we knew the faction existed
 		-- now we know the faction exists and can display the queued message
 		extraMessage = FFF_GetReputationMessage(FFF_QueuedMessageFaction, FFF_QueuedMessageOriginal, FFF_QueuedMessageAmount);
-		for queuedFrame in pairs(FFF_QueuedMessageFrames) do 
+		for queuedFrame in pairs(GFW_FactionFriend.QueuedMessageFrames) do 
 			queuedFrame:AddMessage(extraMessage);
 		end
-		FFF_QueuedMessageFrames = {};
+		GFW_FactionFriend.QueuedMessageFrames = {};
 		
 		if (FFF_QueuedMessageAmount > 0) then
 			if (not FFF_Config.Zones) then
@@ -425,7 +425,7 @@ function FFF_GetFactionInfoByName(factionName)
 			return factionIndex, unpack(factionInfo, 1, 20);	-- currently known to return 14 values, use 20 to be safe
 		end
 		factionIndex = factionIndex + 1;
-	until (name == lastFactionName or factionIndex > FFF_MAX_FACTIONS); 
+	until (name == lastFactionName or factionIndex > GFW_FactionFriend.MAX_FACTIONS); 
 	-- check repeats because when we run out of real factions we just get "other" ad infinitum
 end
 
@@ -452,7 +452,7 @@ function FFF_GetFactionIndex(faction)
 			return factionIndex;
 		end
 		factionIndex = factionIndex + 1;
-	until (not name or factionIndex > FFF_MAX_FACTIONS);
+	until (not name or factionIndex > GFW_FactionFriend.MAX_FACTIONS);
 end
 
 function FFF_CheckZone()
@@ -475,7 +475,7 @@ end
 
 function FFF_SetWatchedFactionConditional(factionName)
 	local watchedFaction = GetWatchedFactionInfo();
-	if (watchedFaction ~= factionName and GetTime() - FFF_LastBarSwitchTime > 5) then
+	if (watchedFaction ~= factionName and GetTime() - GFW_FactionFriend.LastBarSwitchTime > 5) then
 		FFF_SetWatchedFaction(factionName);
 	end
 end
@@ -484,33 +484,33 @@ function FFF_SetWatchedFaction(faction, overrideInactive)
 	local index = FFF_GetFactionIndex(faction);
 	if (index and (overrideInactive or not IsFactionInactive(index))) then
 		SetWatchedFactionIndex(index);
-		FFF_LastBarSwitchTime = GetTime();
+		GFW_FactionFriend.LastBarSwitchTime = GetTime();
 	end
 end
 
 function FFF_AddToRecentFactions(factionName)
 	local newRecentFactions = {factionName};
-	for index = 1, #FFF_RecentFactions do
-		if (#newRecentFactions >= FFF_MAX_RECENTS) then
+	for index = 1, #GFW_FactionFriend.RecentFactions do
+		if (#newRecentFactions >= GFW_FactionFriend.MAX_RECENTS) then
 			break;
 		end
-		if (FFF_RecentFactions[index] ~= factionName) then
-			table.insert(newRecentFactions, FFF_RecentFactions[index]);
+		if (GFW_FactionFriend.RecentFactions[index] ~= factionName) then
+			table.insert(newRecentFactions, GFW_FactionFriend.RecentFactions[index]);
 		end
 	end
-	FFF_RecentFactions = newRecentFactions;
+	GFW_FactionFriend.RecentFactions = newRecentFactions;
 end
 
 function FFF_SanitizeRecentFactions()
 	local newRecentFactions = {};
-	for index = 1, #FFF_RecentFactions do
-		local factionName = FFF_RecentFactions[index]
+	for index = 1, #GFW_FactionFriend.RecentFactions do
+		local factionName = GFW_FactionFriend.RecentFactions[index]
 		local factionIndex, _,_,_,_,_,_,_,_, isHeader, _, hasRep = FFF_GetFactionInfoByName(factionName);
 		if (factionIndex and not (isHeader and not hasRep)) then
 			table.insert(newRecentFactions, factionName);
 		end
 	end
-	FFF_RecentFactions = newRecentFactions;
+	GFW_FactionFriend.RecentFactions = newRecentFactions;
 	FFF_RecentFactionsChecked = true;
 end
 
@@ -980,7 +980,7 @@ function FFF_BuildFactionTree()
 			end
 		end		
 		factionIndex = factionIndex + 1;
-	until (not name or factionIndex > FFF_MAX_FACTIONS);
+	until (not name or factionIndex > GFW_FactionFriend.MAX_FACTIONS);
 	
 	-- TODO: restore collapsed headers
 
@@ -1314,9 +1314,9 @@ function FFF_ShowMenu(level, parentName, parentFrame)
 			maxWidth = math.max(width, maxWidth);
 
 			-- add recent factions
-			for factionIndex = 1, #FFF_RecentFactions do
+			for factionIndex = 1, #GFW_FactionFriend.RecentFactions do
 				numMenuItems = numMenuItems + 1;
-				local name = FFF_RecentFactions[ #FFF_RecentFactions - factionIndex + 1 ];
+				local name = GFW_FactionFriend.RecentFactions[ #GFW_FactionFriend.RecentFactions - factionIndex + 1 ];
 				local button, width = FFF_SetupMenuButton(menuFrame, level, numMenuItems, name);
 				maxWidth = math.max(width, maxWidth);
 			end
