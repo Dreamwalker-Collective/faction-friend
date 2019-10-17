@@ -54,7 +54,7 @@ function WatchBar.Update(newLevel)
     
     bar.OverlayFrame.Text:SetText(name..": "..standingText.." "..value-min.." / "..max-min);
     
-    if (name ~= FFF_RecentFactions[1]) then
+    if (name ~= GFW_FactionFriend.RecentFactions[1]) then
         FFF_AddToRecentFactions(name);
     end
     
