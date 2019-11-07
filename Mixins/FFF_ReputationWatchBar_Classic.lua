@@ -6,9 +6,10 @@
 -- make it easier to maintain in the long run. 
 -----------------------------------------------
 
-FFF_ReputationWatchBar_Classic = {};
 
-function FFF_ReputationWatchBar_Classic.Update()
+local WatchBar = GFW_FactionFriend.ReputationWatchBar;
+
+function WatchBar.Update()
     local name, standing, min, max, value, factionID = GetWatchedFactionInfo();
     if (not name) then return; end
 
@@ -24,9 +25,9 @@ function FFF_ReputationWatchBar_Classic.Update()
         FFF_ReputationTick:SetPoint("CENTER", bar, "CENTER", 0, 0);
         
         -- first time seeing ReputationBar means time to hook it
-        bar:HookScript("OnEnter", FFF_ReputationWatchBar.OnEnter);
-        bar:HookScript("OnLeave", FFF_ReputationWatchBar.OnLeave);
-        bar:HookScript("OnMouseDown", FFF_ReputationWatchBar.OnClick);
+        bar:HookScript("OnEnter", WatchBar.OnEnter);
+        bar:HookScript("OnLeave", WatchBar.OnLeave);
+        bar:HookScript("OnMouseDown", WatchBar.OnClick);
     end
 
     local standingText;
@@ -35,7 +36,7 @@ function FFF_ReputationWatchBar_Classic.Update()
     TextStatusBar_UpdateTextString(ReputationWatchBar);
     --ReputationWatchBar.StatusBar:SetValue(name..": "..standingText.." "..value-min.." / "..max-min);
 
-    if (name ~= FFF_RecentFactions[1]) then
+    if (name ~= GFW_FactionFriend.RecentFactions[1]) then
         FFF_AddToRecentFactions(name);
     end
 
@@ -67,5 +68,8 @@ function FFF_ReputationWatchBar_Classic.Update()
             FFF_ReputationExtraFillBarTexture:SetVertexColor(color.r, color.g, color.b, 0.15);
         end
     end
+end
 
+function WatchBar.RegisterFunctions()
+    hooksecurefunc("MainMenuBar_UpdateExperienceBars", WatchBar.Update);
 end

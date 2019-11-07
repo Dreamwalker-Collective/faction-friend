@@ -6,7 +6,9 @@
 -- make it easier to maintain in the long run. 
 -----------------------------------------------
 
-function FFF_ReputationWatchBar_Update(newLevel)
+local WatchBar = GFW_FactionFriend.ReputationWatchBar;
+
+function WatchBar.Update(newLevel)
     
     local bar = FFF_GetReputationWatchBar()
     if bar == nil then
@@ -23,9 +25,9 @@ function FFF_ReputationWatchBar_Update(newLevel)
         FFF_ReputationTick:SetPoint("CENTER", bar, "CENTER", 0, 0)
         
         -- first time seeing ReputationBar means time to hook it
-        bar:HookScript("OnEnter", FFF_ReputationWatchBar_OnEnter)
-        bar:HookScript("OnLeave", FFF_ReputationWatchBar_OnLeave)
-        bar:HookScript("OnMouseDown", FFF_ReputationWatchBar_OnClick)
+        bar:HookScript("OnEnter", GFW_FactionFriend.ReputationWatchBar.OnEnter)
+        bar:HookScript("OnLeave", GFW_FactionFriend.ReputationWatchBar.OnLeave)
+        bar:HookScript("OnMouseDown", GFW_FactionFriend.ReputationWatchBar.OnClick)
     end
     
     
@@ -52,7 +54,7 @@ function FFF_ReputationWatchBar_Update(newLevel)
     
     bar.OverlayFrame.Text:SetText(name..": "..standingText.." "..value-min.." / "..max-min);
     
-    if (name ~= FFF_RecentFactions[1]) then
+    if (name ~= GFW_FactionFriend.RecentFactions[1]) then
         FFF_AddToRecentFactions(name);
     end
     
@@ -87,10 +89,34 @@ function FFF_ReputationWatchBar_Update(newLevel)
     end
 end
 
+function GFW_FactionFriend.ReputationWatchBar.SetRowType(factionRow, isChild, isHeader, hasRep)
+    local factionRowName = factionRow:GetName()
+
+    local factionIcon = _G[factionRowName.."Icon"];
+    if (not factionIcon) then
+        factionIcon = CreateFrame("Button", factionRowName.."Icon", factionRow, "FFF_FactionButtonTemplate");
+        factionIcon:SetPoint("LEFT", factionRow, "RIGHT",2,0);
+        factionRow:HookScript("OnEnter", FFF_FactionButtonTooltip);
+    end
+
+    factionIcon.index = factionRow.index;
+
+    local potential = FFF_GetFactionPotential(factionRow.index);
+    if ( ((hasRep) or (not isHeader)) and (potential > 0) ) then
+        factionIcon:Show();
+    else
+        factionIcon:Hide();
+    end
+end
+
 local function FFF_GetReputationWatchBar()
     for _, bar in pairs(StatusTrackingBarManager.bars) do
         if bar.priority == 1 then -- this seems really fragile
             return bar
         end
     end
+end
+
+function WatchBar.RegisterFunctions()
+    hooksecurefunc("ReputationFrame_SetRowType", GFW_FactionFriend.ReputationWatchBar.SetRowType);
 end

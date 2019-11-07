@@ -3,8 +3,8 @@
 
 	<Frame name="FFF_HandlerFrame"> 
 		<Scripts> 
-			<OnLoad function="FFF_OnLoad"/>
-			<OnEvent function="FFF_OnEvent"/>
+			<OnLoad function="GFW_FactionFriend_OnLoad"/>
+			<OnEvent function="GFW_FactionFriend:OnEvent"/>
 			<!--<OnUpdate function="FFF_OnUpdate"/>-->
 		</Scripts> 
 	</Frame> 
@@ -45,9 +45,9 @@
 			<OnClick>
 				self:Hide();
 			</OnClick>
-			<OnEnter function="FFF_Menu_StopCounting"/>
-			<OnLeave function="FFF_Menu_StartCounting"/>
-			<OnUpdate function="FFF_Menu_OnUpdate"/>
+			<OnEnter function="GFW_FactionFriend.Menu:StopCounting"/>
+			<OnLeave function="GFW_FactionFriend.Menu:StartCounting"/>
+			<OnUpdate function="GFW_FactionFriend.Menu:OnUpdate"/>
 			<OnHide>
 				FFF_HideMenus(self:GetID());
 			</OnHide>
@@ -99,11 +99,11 @@
 			<Button name="$parentInvisibleButton" hidden="true" setAllPoints="true">
 				<Scripts>
 					<OnEnter>
-						FFF_Menu_StopCounting(self:GetParent():GetParent());
+						GFW_FactionFriend.Menu:StopCounting(self:GetParent():GetParent());
 						FFF_HideMenus(self:GetParent():GetParent():GetID() + 1);
 					</OnEnter>
 					<OnLeave>
-						FFF_Menu_StartCounting(self:GetParent():GetParent());
+						GFW_FactionFriend.Menu:StartCounting(self:GetParent():GetParent());
 					</OnLeave>
 				</Scripts>
 			</Button>

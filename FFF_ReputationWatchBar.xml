@@ -24,7 +24,7 @@
                 self:UnlockHighlight();
             </OnLeave>
             <OnMouseDown>
-                FFF_ReputationWatchBar.OnClick(arg1);
+                GFW_FactionFriend.ReputationWatchBar.OnClick(arg1);
             </OnMouseDown>
         </Scripts>
         <NormalTexture file="Interface\MainMenuBar\UI-ExhaustionTickNormal"/>
