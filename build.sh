@@ -34,7 +34,7 @@ addon="FactionFriend_Reborn"
 if [[ "${build_classic}" == "true" ]]; then
     # Classic
     echo "Building Classic version"
-    classic="/home/dragonwolf/Games/diablo-iii/drive_c/Program Files (x86)/World of Warcraft/_classic_/Interface/AddOns/"
+    classic="${HOME}/Games/world-of-warcraft-classic/drive_c/Program Files (x86)/World of Warcraft/_classic_/Interface/AddOns/"
     curl -s "$build_script" | bash -s -- -d -e -z -r "$classic" -g 1.13.2
     echo "Copying local Libs"
     cp -r ../../Ace3 "$classic$addon/Libs"
@@ -43,7 +43,7 @@ fi
 if [[ "${build_retail}" == "true" ]]; then
     echo "Building Retail version"
     # Retail
-    retail="/home/dragonwolf/Games/diablo-iii/drive_c/Program Files (x86)/World of Warcraft/_retail_/Interface/AddOns/"
+    retail="${HOME}/Games/world-of-warcraft/drive_c/Program Files (x86)/World of Warcraft/_retail_/Interface/AddOns/"
     curl -s "$build_script" | bash -s -- -d -e -z -r "$retail"
     echo "Copying local Libs"
     cp -r ../../Ace3 "$retail$addon/Libs"

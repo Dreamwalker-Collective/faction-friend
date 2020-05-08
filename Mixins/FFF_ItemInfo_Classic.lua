@@ -67,6 +67,8 @@ FFF_ZoneFactions = {
         [ZONE_SEARING_GORGE] = F.THORIUM_BROTHERHOOD,
         [ZONE_DIRE_MAUL] = F.SHENDRALAR,
         [ZONE_TANARIS] = F.GADGETZAN,
+        [ZONE_YOJAMBA] = F.ZANDALAR,
+        [ZONE_ZUL_GURUB] = F.ZANDALAR,
     },
 };
 
@@ -79,12 +81,18 @@ FFF_ExcludedFactions = {
         [F.TROLL] = 1,
         [F.TAUREN] = 1,
         [F.ORC] = 1,
+        [F.FROSTWOLF] = 1,
+        [F.DEFILERS] = 1, 
+        [F.WARSONG_OUTRIDERS] = 1,
     },
     ["Horde"] = {
         [F.HUMAN] = 1,
         [F.GNOME] = 1,
         [F.NELF] = 1,
         [F.DWARF] = 1,
+        [F.STORMPIKE] = 1,
+        [F.ARATHOR] = 1,
+        [F.SILVERWING] = 1
     },
 };
 
@@ -548,6 +556,14 @@ FFF_ItemInfo = {
                 [20560] = 3
             }
         },
+        AV_ForGreatHonor = {
+            value = 150,
+            items = {
+                [20560] = 3,
+                [20558] = 3,
+                [20559] = 3,
+            }
+        }
     },
     [F.STORMPIKE] = {
         AV_RiderHarnesses = {
@@ -598,6 +614,14 @@ FFF_ItemInfo = {
                 [20560] = 3
             }
         },
+        AV_ForGreatHonor = {
+            value = 150,
+            items = {
+                [20558] = 3,
+                [20559] = 3,
+                [20560] = 3
+            }
+        },
     },
 
     [F.SILVERWING] = {
@@ -606,7 +630,15 @@ FFF_ItemInfo = {
             items = {
                 [20558] = 3
             }
-        }
+        },
+        WSG_ForGreatHonor = {
+            value = 100,
+            items = {
+                [20558] = 3,
+                [20559] = 3,
+                [20560] = 3
+            }
+        },
     },
     [F.WARSONG_OUTRIDERS] = {
         WSG_MarkOfHonor = {
@@ -614,7 +646,49 @@ FFF_ItemInfo = {
             items = {
                 [20558] = 3
             }
-        }
+        },
+        WSG_ForGreatHonor = {
+            value = 100,
+            items = {
+                [20558] = 3,
+                [20559] = 3,
+                [20560] = 3
+            }
+        },
+    },
+
+    [F.DEFILERS] = {
+        AB_MarkOfHonor = {
+            value = 50,
+            items = {
+                [20559] = 3
+            }
+        },
+        AB_ForGreatHonor = {
+            value = 100,
+            items = {
+                [20558] = 3,
+                [20559] = 3,
+                [20560] = 3
+            }
+        },
+    },
+
+    [F.ARATHOR] = {
+        AB_MarkOfHonor = {
+            value = 50,
+            items = {
+                [20559] = 3
+            }
+        },
+        AB_ForGreatHonor = {
+            value = 100,
+            items = {
+                [20558] = 3,
+                [20559] = 3,
+                [20560] = 3
+            },
+        },
     },
 
     -- Other factions
@@ -626,18 +700,82 @@ FFF_ItemInfo = {
                 [19858] = 1,    -- Zandalar Honor Token
             },
         },
-        HakkariBijous = {
-            value = 125,    -- Full reward, including Honor Token
+        Red_HakkariBijous = {
+            value = 75, 
             items = {
                 [19707] = 1, -- Red
+            }
+        },
+        Blue_HakkariBijous = {
+            value = 75, 
+            items = {
                 [19708] = 1, -- Blue
+            }
+        },
+        Yellow_HakkariBijous = {
+            value = 75, 
+            items = {
                 [19709] = 1, -- Yellow
+            }
+        },
+        Orange_HakkariBijous = {
+            value = 75,  
+            items = {
                 [19710] = 1, -- Orange
+            }
+        },
+        Green_HakkariBijous = {
+            value = 75,   
+            items = {
                 [19711] = 1, -- Green
+            }
+        },
+        Purple_HakkariBijous = {
+            value = 75,  
+            items = {
                 [19712] = 1, -- Purple
+            }
+        },
+        Bronze_HakkariBijous = {
+            value = 75,  
+            items = {
                 [19713] = 1, -- Bronze
+            }
+        },
+        Silver_HakkariBijous = {
+            value = 75,  
+            items = {
                 [19714] = 1, -- Silver
+            }
+        },
+        Gold_HakkariBijous = {
+            value = 75,  
+            items = {
                 [19715] = 1, -- Gold
+            }
+        },
+        ZRH_Coins = { -- Zulian, Razzashi, and Hakkari Coins
+            value = 25,
+            items = {
+                [19698] = 1,
+                [19699] = 1,
+                [19700] = 1,
+            }
+        },
+        SSB_Coins = { -- Sandfury, Skullsplitter, and Bloodscalp Coins
+            value = 25,
+            items = {
+                [19704] = 1,
+                [19705] = 1,
+                [19706] = 1,
+            }
+        },
+        GVW_Coins = { -- Gurubashi, Vilebranch, and Witherbark Coins
+            value = 25,
+            items = {
+                [19701] = 1,
+                [19702] = 1,
+                [19703] = 1,
             }
         }
     },
@@ -714,19 +852,23 @@ FFF_ItemInfo = {
             },
         },
         CorruptorsScourgestones = {
-            value = 50,     -- Includes value of AD Valor Token use
+            value = 25,
             items = {
                 [12843] = 1, -- Corruptor's Scourgestones
             },
+            --creates = {
+            --    item = FFF_ItemInfo[F.ARGENT_DAWN].A_ValorTokens,
+            --    quantity = 1
+            --},
         },
         InvadersScourgestones = {
-            value = 50,     -- Includes value of AD Valor Token use
+            value = 25,
             items = {
                 [12841] = 10, -- Invader's Scourgestones
             },
         },
         MinionsScourgestones = {
-            value = 50,     -- Includes value of AD Valor Token use
+            value = 25,
             items = {
                 [12840] = 20, -- Minion's Scourgestones
             },
