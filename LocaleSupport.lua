@@ -27,6 +27,8 @@ ZONE_MOLTEN_CORE                = "Molten Core"
 ZONE_BLACKROCK_DEPTHS           = "Blackrock Depths"
 ZONE_DIRE_MAUL                  = "Dire Maul"
 ZONE_TANARIS                    = "Tanaris"
+ZONE_YOJAMBA                    = "Yojamba Isle"
+ZONE_ZUL_GURUB                  = "Zul'Gurub"
 
 -- Burning Crusade zones & instances
 ZONE_GHOSTLANDS					= "Ghostlands"
