@@ -802,14 +802,14 @@ FFF_ItemInfo = {
     },
     [F.CENARION_CIRCLE] = {
         _MortalChampions = {
-            value = 200,
+            value = 100,
             items = {
                 [21229] = 1,    -- Qiraji Lord's Insignia
             },
         },
 
         TwilightTexts = {
-            value = 500,
+            value = 100,
             items = {
                 [20404] = 10,   -- Encrypted Twilight Text
             },
@@ -825,19 +825,19 @@ FFF_ItemInfo = {
         },
 
         Abyssal3_Scepters = {
-            value = 350,       
+            value = 150,       
             items = {
                 [20515] = 3,    -- Abyssal Scepter
             },
         },
         Abyssal2_Signets = {
-            value = 250,
+            value = 100,
             items = {
                 [20514] = 3,    -- Abyssal Signet
             },
         },
         Abyssal1_Crests = {
-            value = 75,
+            value = 50,
             items = {
                 [20513] = 3,    -- Abyssal Crest
             },
