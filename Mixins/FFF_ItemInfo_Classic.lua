@@ -1118,6 +1118,12 @@ FFF_ItemInfo = {
 				[35188] = 15,	-- Nesingwary Lackey Ear
 			},
 		},
+        CoilfangArmaments = {
+            value = 75,
+            items = {
+                [24368] = 1
+            }
+        },
 		-- B_TimewarpedBadge = { -- "A_" and "B_" keys for order dependency
 		-- 	creates = {
 		-- 		[129949] = 1,	-- Commendation of Cenarion Expedition
