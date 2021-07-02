@@ -24,18 +24,40 @@ FFF_FactionIDs = {
         TAUREN = 81,
         TROLL = 530,
         FORSAKEN = 68,
+        BELF = 911,
     ALLIANCE = 469,
         DWARF = 47,
         NELF = 69,
         GNOME = 54,
         HUMAN = 72,
--- Horde/Alliance Forces            
-    FROSTWOLF = 729,
-    DEFILERS = 510,
-    WARSONG_OUTRIDERS = 889,
-    STORMPIKE = 730,
-    ARATHOR = 509,
-    SILVERWING = 890,
+        DRAENEI = 930,
+    -- Horde/Alliance Forces            
+        FROSTWOLF = 729,
+        DEFILERS = 510,
+        WARSONG_OUTRIDERS = 889,
+        STORMPIKE = 730,
+        ARATHOR = 509,
+        SILVERWING = 890,
+
+    -- Burning Crusade factions 	    
+	TRANQUILLIEN = 922,
+	CENARION_EXPEDITION = 942,
+	SPOREGGAR = 970,
+	KURENAI = 978,
+	MAGHAR = 941,
+	CONSORTIUM = 933,
+	ALDOR = 932,
+	SCRYER = 934,
+	SHATAR = 935,
+	LOWER_CITY = 1011,
+	NETHERWING = 1015,
+	SKYGUARD = 1031,
+	HONOR_HOLD = 946,
+	THRALLMAR = 947,
+	KEEPERS_OF_TIME = 989,
+	SCALE_SANDS = 990,
+	SHATTERED_SUN = 1077,
+	VIOLET_EYE = 967,
 }
 local F = FFF_FactionIDs;
 
@@ -47,11 +69,23 @@ FFF_ZoneFactions = {
         [ZONE_AV] = F.FROSTWOLF,
         [ZONE_AB] = F.DEFILERS,
         [ZONE_WSG] = F.WARSONG_OUTRIDERS,
+
+        		
+		-- BC zones/dungeons
+		[ZONE_GHOSTLANDS] = F.TRANQUILLIEN,
+		[ZONE_HELLFIRE_RAMPARTS] = F.THRALLMAR,
+		[ZONE_BLOOD_FURNACE] = F.THRALLMAR,
+		[ZONE_SHATTERED_HALLS] = F.THRALLMAR,
     },
     ["Alliance"] = {
         [ZONE_AV] = F.STORMPIKE,
         [ZONE_AB] = F.ARATHOR,
         [ZONE_WSG] = F.SILVERWING,
+
+        -- BC zones/dungeons
+		[ZONE_HELLFIRE_RAMPARTS] = F.HONOR_HOLD,
+		[ZONE_BLOOD_FURNACE] = F.HONOR_HOLD,
+		[ZONE_SHATTERED_HALLS] = F.HONOR_HOLD,
     },
     ["Neutral"] = {
         [ZONE_MOONGLADE] = F.CENARION_CIRCLE,
@@ -69,6 +103,24 @@ FFF_ZoneFactions = {
         [ZONE_TANARIS] = F.GADGETZAN,
         [ZONE_YOJAMBA] = F.ZANDALAR,
         [ZONE_ZUL_GURUB] = F.ZANDALAR,
+
+        -- BC zones/dungeons
+		[ZONE_ISLE_QUELDANAS] = F.SHATTERED_SUN,
+		[ZONE_AUCHENAI_CRYPTS] = F.LOWER_CITY,
+		[ZONE_MANA_TOMBS] = F.CONSORTIUM,
+		[ZONE_SETHEKK_HALLS] = F.LOWER_CITY,
+		[ZONE_SHADOW_LABYRINTH] = F.LOWER_CITY,
+		[ZONE_OLD_HILLSBRAD] = F.KEEPERS_OF_TIME,
+		[ZONE_BLACK_MORASS] = F.KEEPERS_OF_TIME,
+		[ZONE_SLAVE_PENS] = F.CENARION_EXPEDITION,
+		[ZONE_STEAMVAULT] = F.CENARION_EXPEDITION,
+		[ZONE_UNDERBOG] = F.CENARION_EXPEDITION,
+		[ZONE_MAGISTERS_TERRACE] = F.SHATTERED_SUN,
+		[ZONE_ARCATRAZ] = F.SHATAR,
+		[ZONE_BOTANICA] = F.SHATAR,
+		[ZONE_MECHANAR] = F.SHATAR,
+		[ZONE_KARAZHAN] = F.VIOLET_EYE,
+		[ZONE_HYJAL_SUMMIT] = F.SCALE_SANDS,
     },
 };
 
@@ -84,6 +136,9 @@ FFF_ExcludedFactions = {
         [F.FROSTWOLF] = 1,
         [F.DEFILERS] = 1, 
         [F.WARSONG_OUTRIDERS] = 1,
+        [F.MAGHAR] = 1,
+        [F.TRANQUILLIEN] = 1,
+        [F.BELF] = 1
     },
     ["Horde"] = {
         [F.HUMAN] = 1,
@@ -92,7 +147,9 @@ FFF_ExcludedFactions = {
         [F.DWARF] = 1,
         [F.STORMPIKE] = 1,
         [F.ARATHOR] = 1,
-        [F.SILVERWING] = 1
+        [F.SILVERWING] = 1,
+        [F.KURENAI] = 1,
+        [F.DRAENEI] = 1
     },
 };
 
@@ -550,20 +607,20 @@ FFF_ItemInfo = {
                 [17326] = 1,    -- Stormpike Soldier's Flesh
             },
         },
-        AV_MarkOfHonor = {
-            value = 100,
-            items = {
-                [20560] = 3
-            }
-        },
-        AV_ForGreatHonor = {
-            value = 150,
-            items = {
-                [20560] = 3,
-                [20558] = 3,
-                [20559] = 3,
-            }
-        }
+        -- AV_MarkOfHonor = {
+        --     value = 100,
+        --     items = {
+        --         [20560] = 3
+        --     }
+        -- },
+        -- AV_ForGreatHonor = {
+        --     value = 150,
+        --     items = {
+        --         [20560] = 3,
+        --         [20558] = 3,
+        --         [20559] = 3,
+        --     }
+        -- }
     },
     [F.STORMPIKE] = {
         AV_RiderHarnesses = {
@@ -608,71 +665,71 @@ FFF_ItemInfo = {
                 [17502] = 1,    -- Frostwolf Soldier's Medal
             },
         },
-        AV_MarkOfHonor = {
-            value = 100,
-            items = {
-                [20560] = 3
-            }
-        },
-        AV_ForGreatHonor = {
-            value = 150,
-            items = {
-                [20558] = 3,
-                [20559] = 3,
-                [20560] = 3
-            }
-        },
+        -- AV_MarkOfHonor = {
+        --     value = 100,
+        --     items = {
+        --         [20560] = 3
+        --     }
+        -- },
+        -- AV_ForGreatHonor = {
+        --     value = 150,
+        --     items = {
+        --         [20558] = 3,
+        --         [20559] = 3,
+        --         [20560] = 3
+        --     }
+        -- },
     },
 
-    [F.SILVERWING] = {
-        WSG_MarkOfHonor = {
-            value = 50,
-            items = {
-                [20558] = 3
-            }
-        },
-        WSG_ForGreatHonor = {
-            value = 100,
-            items = {
-                [20558] = 3,
-                [20559] = 3,
-                [20560] = 3
-            }
-        },
-    },
-    [F.WARSONG_OUTRIDERS] = {
-        WSG_MarkOfHonor = {
-            value = 50,
-            items = {
-                [20558] = 3
-            }
-        },
-        WSG_ForGreatHonor = {
-            value = 100,
-            items = {
-                [20558] = 3,
-                [20559] = 3,
-                [20560] = 3
-            }
-        },
-    },
+    -- [F.SILVERWING] = {
+    --     WSG_MarkOfHonor = {
+    --         value = 50,
+    --         items = {
+    --             [20558] = 3
+    --         }
+    --     },
+    --     WSG_ForGreatHonor = {
+    --         value = 100,
+    --         items = {
+    --             [20558] = 3,
+    --             [20559] = 3,
+    --             [20560] = 3
+    --         }
+    --     },
+    -- },
+    -- [F.WARSONG_OUTRIDERS] = {
+    --     WSG_MarkOfHonor = {
+    --         value = 50,
+    --         items = {
+    --             [20558] = 3
+    --         }
+    --     },
+    --     WSG_ForGreatHonor = {
+    --         value = 100,
+    --         items = {
+    --             [20558] = 3,
+    --             [20559] = 3,
+    --             [20560] = 3
+    --         }
+    --     },
+    -- },
 
-    [F.DEFILERS] = {
-        AB_MarkOfHonor = {
-            value = 50,
-            items = {
-                [20559] = 3
-            }
-        },
-        AB_ForGreatHonor = {
-            value = 100,
-            items = {
-                [20558] = 3,
-                [20559] = 3,
-                [20560] = 3
-            }
-        },
-    },
+    -- [F.DEFILERS] = {
+    --     AB_MarkOfHonor = {
+    --         value = 50,
+    --         items = {
+    --             [20559] = 3
+    --         }
+    --     },
+    --     AB_ForGreatHonor = {
+    --         value = 100,
+    --         items = {
+    --             [20558] = 3,
+    --             [20559] = 3,
+    --             [20560] = 3
+    --         }
+    --     },
+    -- },
 
     [F.ARATHOR] = {
         AB_MarkOfHonor = {
@@ -956,5 +1013,395 @@ FFF_ItemInfo = {
             },
         },
     },
+
+    	-- Burning Crusade factions
+	[F.CONSORTIUM] = {
+		Prisons2_AThousandWorlds = {
+			value = 500,
+			minStanding = 7, 
+			items = {
+				[29460] = 5,	-- Ethereum Prison Key
+			},
+		},
+		Prisons1_EthereumSecrets = {
+			value = 250,
+			minStanding = 6, 
+			items = {
+				[31957] = 1,	-- Ethereum Prisoner I.D. Tag
+			},
+		},
+		Netherstorm_HeapOfEtherials = {
+			value = 250,
+			minStanding = 5, 
+			items = {
+				[29209] = 10,	-- Zaxxis Insignia
+			},
+		},
+		Nagrand_Warbeads = {
+			value = 250,
+			minStanding = 5, 
+			items = {
+				[25433] = 10,	-- Obsidian Warbeads
+			},
+		},
+		IvoryTusks = {
+			value = 250,
+			minStanding = 4, 
+			maxStanding = 4, 
+			items = {
+				[25463] = 3,	-- Pair of Ivory Tusks
+			},
+		},
+		CrystalFragments = {
+			value = 250,
+			minStanding = 4, 
+			maxStanding = 4, 
+			items = {
+				[25416] = 10,	-- Oshu'gun Crystal Fragment
+			},
+		},
+		-- B_TimewarpedBadge = { -- "A_" and "B_" keys for order dependency
+		-- 	creates = {
+		-- 		[129945] = 1,	-- Commendation of the Consortium
+		-- 	},
+		-- 	value = 0,
+		-- 	buyValue = 500,
+		-- 	items = {
+		-- 		["currency:1166"] = 50,	-- Timewarped Badge
+		-- 	},
+		-- },
+		A_TimewarpedCommendation = {
+			value = 500,
+			items = {
+				[129945] = 1,	-- Commendation of the Consortium
+			}
+		},
+	},
+	[F.MAGHAR] = {
+		Warbeads = {
+			value = 500,
+			minStanding = 4, 
+			items = {
+				[25433] = 10,	-- Obsidian Warbeads
+			},
+		},
+	},
+	[F.KURENAI] = {
+		Warbeads = {
+			value = 500,
+			minStanding = 4, 
+			items = {
+				[25433] = 10,	-- Obsidian Warbeads
+			},
+		},
+	},
+	[F.CENARION_EXPEDITION] = {
+		Junk_IdentifyPlantParts = {
+			value = 250,
+			minStanding = 4, 
+			maxStanding = 5, 
+			items = {
+				[24401] = 10,	-- Unidentified Plant Parts
+			},
+		},
+		Junk_UncataloguedSpecies = {
+			value = 500,
+			minStanding = 4, 
+			items = {
+				[24407] = 1,	-- Uncatalogued Species
+			},
+		},
+		CantGetEarnough = {
+			value = 150,
+			minStanding = 4, 
+			items = {
+				[35188] = 15,	-- Nesingwary Lackey Ear
+			},
+		},
+		-- B_TimewarpedBadge = { -- "A_" and "B_" keys for order dependency
+		-- 	creates = {
+		-- 		[129949] = 1,	-- Commendation of Cenarion Expedition
+		-- 	},
+		-- 	value = 0,
+		-- 	buyValue = 500,
+		-- 	items = {
+		-- 		["currency:1166"] = 50,	-- Timewarped Badge
+		-- 	},
+		-- },
+		A_TimewarpedCommendation = {
+			value = 500,
+			items = {
+				[129949] = 1,	-- Commendation of Cenarion Expedition
+			}
+		},
+	},
+	[F.SPOREGGAR] = {
+		Part3_BringMeAShrubbery = {
+			value = 750,
+			minStanding = 5, 
+			items = {
+				[24246] = 5,	-- Sanguine Hibiscus
+			},
+		},
+		Part2_Glowcaps = {
+			value = 750,
+			minStanding = 4, 
+			maxStanding = 4, 
+			items = {
+				[24245] = 10,	-- Glowcap
+			},
+		},
+		Part2_FertileSpores = {
+			value = 750,
+			minStanding = 4, 
+			items = {
+				[24449] = 6,	-- Fertile Spores
+			},
+		},
+		Part1_Tendrils = {
+			value = 750,
+			maxStanding = 4, 
+			items = {
+				[24291] = 6,	-- Bog Lord Tendril
+			},
+		},
+		Part1_SporeSacs = {
+			value = 750,
+			maxStanding = 4, 
+			items = {
+				[24290] = 10,	-- Mature Spore Sac
+			},
+		},
+		PungentTruffle = {
+			value = 15,
+			items = {
+				[144263] = 1, -- Pungent Truffle
+			},
+		},
+	},
+	[F.ALDOR] = {
+		Unfriendly_VenomSacs = {
+			value = 250,
+			maxStanding = 3, 
+			items = {
+				[25802] = 8,	-- Dreadfang Venom Sac
+			},
+		},
+		MarksOfSargeras_10 = {
+			value = 250,
+			minStanding = 5, 
+			items = {
+				[30809] = 10,	-- Mark of Sargeras
+			},
+		},
+		MarksOfSargeras_01 = {
+			value = 25,
+			minStanding = 5, 
+			items = {
+				[30809] = 1,	-- Mark of Sargeras
+			},
+		},
+		MarksOfKiljaeden_10 = {
+			value = 250,
+			minStanding = 4, 
+			maxStanding = 5,
+			items = {
+				[29425] = 10,	-- Mark of Kil'jaeden
+			},
+		},
+		MarksOfKiljaeden_01 = {
+			value = 25,
+			minStanding = 4,
+			maxStanding = 5,
+			items = {
+				[29425] = 1,	-- Mark of Kil'jaeden
+			},
+		},
+		FelArmament = {
+			value = 350,
+			minStanding = 5, 
+			items = {
+				[29740] = 1,	-- Fel Armament
+			},
+		},
+	},
+	[F.SCRYER] = {
+		Unfriendly_BasiliskEyes = {
+			value = 250,
+			maxStanding = 3, 
+			items = {
+				[25744] = 8,	-- Dampscale Basilisk Eye
+			},
+		},		
+		SunfurySignet_10 = {
+			value = 250,
+			minStanding = 5, 
+			items = {
+				[30810] = 10,	-- Sunfury Signet
+			},
+		},
+		SunfurySignet_01 = {
+			value = 25,
+			minStanding = 5, 
+			items = {
+				[30810] = 1,	-- Sunfury Signet
+			},
+		},
+		FirewingSignet_10 = {
+			value = 250,
+			minStanding = 4, 
+			maxStanding = 5,
+			items = {
+				[29426] = 10,	-- Firewing Signet
+			},
+		},
+		FirewingSignet_01 = {
+			value = 25,
+			minStanding = 4, 
+			maxStanding = 5,
+			items = {
+				[29426] = 1,	-- Firewing Signet
+			},
+		},
+		ArcaneTome = {
+			value = 350,
+			minStanding = 5, 
+			items = {
+				[29739] = 1,	-- Arcane Tome
+			},
+		},
+	},
+	[F.LOWER_CITY] = {
+		ArakkoaFeathers = {
+			value = 250,
+			minStanding = 4, 
+			maxStanding = 5, 
+			items = {
+				[25719] = 30,	-- Arakkoa Feather
+			},
+		},
+		-- B_TimewarpedBadge = { -- "A_" and "B_" keys for order dependency
+		-- 	creates = {
+		-- 		[129951] = 1,	-- Commendation of Lower City
+		-- 	},
+		-- 	value = 0,
+		-- 	buyValue = 500,
+		-- 	items = {
+		-- 		["currency:1166"] = 50,	-- Timewarped Badge
+		-- 	},
+		-- },
+		A_TimewarpedCommendation = {
+			value = 500,
+			items = {
+				[129951] = 1,	-- Commendation of Lower City
+			}
+		},
+	},
+	[F.NETHERWING] = {
+		GreatEggHunt = {
+			value = 250,
+			minStanding = 4, 
+			items = {
+				[32506] = 1,	-- Netherwing Egg
+			},
+		},
+	},
+	[F.SKYGUARD] = {
+		ElixirOfShadows = {
+			value = 150,
+			minStanding = 4, 
+			items = {
+				[32388] = 6,	-- Shadow Dust
+			},
+		},
+	},
+	[F.SHATAR] = {
+		Scryer_ArcaneTome = {
+			value = 175,
+			maxStanding = 5,
+			otherFactionRequired = {
+				faction = F.SCRYER,
+				minStanding = 5,
+			},
+			items = {
+				[29739] = 1,	-- Arcane Tome
+			},
+		},
+		Scryer_SunfurySignet_10 = {
+			value = 125,
+			maxStanding = 5,
+			otherFactionRequired = {
+				faction = F.SCRYER,
+				minStanding = 5,
+			},
+			items = {
+				[30810] = 10,	-- Sunfury Signet
+			},
+		},
+		Scryer_FirewingSignet_10 = {
+			value = 125,
+			maxStanding = 5,
+			otherFactionRequired = {
+				faction = F.SCRYER,
+				minStanding = 4, 
+				maxStanding = 5,
+			},
+			items = {
+				[29426] = 10,	-- Firewing Signet
+			},
+		},
+
+		Aldor_FelArmament = {
+			value = 175,
+			maxStanding = 5,
+			otherFactionRequired = {
+				faction = F.ALDOR,
+				minStanding = 5,
+			},
+			items = {
+				[29740] = 1,	-- Fel Armament
+			},
+		},
+		Aldor_MarksOfSargeras_10 = {
+			value = 125,
+			maxStanding = 5,
+			otherFactionRequired = {
+				faction = F.ALDOR,
+				minStanding = 5,
+			},
+			items = {
+				[30809] = 10,	-- Mark of Sargeras
+			},
+		},
+		Aldor_MarksOfKiljaeden_10 = {
+			value = 125,
+			maxStanding = 5,
+			otherFactionRequired = {
+				faction = F.ALDOR,
+				minStanding = 4, 
+				maxStanding = 5,
+			},
+			items = {
+				[29425] = 10,	-- Mark of Kil'jaeden
+			},
+		},
+
+		-- B_TimewarpedBadge = { -- "A_" and "B_" keys for order dependency
+		-- 	creates = {
+		-- 		[129946] = 1,	-- Commendation of The Sha'tar
+		-- 	},
+		-- 	value = 0,
+		-- 	buyValue = 500,
+		-- 	items = {
+		-- 		["currency:1166"] = 50,	-- Timewarped Badge
+		-- 	},
+		-- },
+		A_TimewarpedCommendation = {
+			value = 500,
+			items = {
+				[129946] = 1,	-- Commendation of The Sha'tar
+			}
+		},
+	},
     
 };
